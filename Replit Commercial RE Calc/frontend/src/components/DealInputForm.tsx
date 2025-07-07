@@ -105,7 +105,7 @@ export default function DealInputForm({
   return (
     <Box>
       {renderStep()}
-      
+
       <HStack spacing={4} justify="space-between" mt={8}>
         <Button
           onClick={handleBack}
@@ -114,7 +114,7 @@ export default function DealInputForm({
         >
           Back
         </Button>
-        
+
         <Button
           onClick={handleNext}
           colorScheme="brand"
