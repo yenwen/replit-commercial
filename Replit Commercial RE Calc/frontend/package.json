@@ -1,4 +1,4 @@
-{
+upm add '@chakra-ui/react@latest' '@chakra-ui/icons@latest'{
   "name": "commercial-re-calc-frontend",
   "version": "0.1.0",
   "private": true,
