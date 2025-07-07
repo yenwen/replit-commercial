@@ -62,7 +62,7 @@ export default function DealResults({ analysis }: DealResultsProps) {
     const years = Array.from({ length: 10 }, (_, i) => `Year ${i + 1}`)
     const cashFlows = years.map((_, i) => {
       const baseFlow = financialMetrics.noi * (1 + 0.03) ** i // 3% annual growth
-      const debtService = analysis.dealInput.financing.loanAmount * (analysis.dealInput.financing.interestRate / 100) * 1.2 // Approx annual debt service
+      const debtService = analysis.dealInput.loanTerms.loanAmount * (analysis.dealInput.loanTerms.interestRate / 100) * 1.2 // Approx annual debt service
       return baseFlow - debtService
     })
 
@@ -83,10 +83,11 @@ export default function DealResults({ analysis }: DealResultsProps) {
   // Generate IRR waterfall data
   const generateIRRWaterfallData = () => {
     const components = ['Initial Investment', 'Annual Cash Flow', 'Tax Benefits', 'Appreciation', 'Total Return']
+    const downPayment = analysis.dealInput.purchasePrice - analysis.dealInput.loanTerms.loanAmount
     const values = [
-      -analysis.dealInput.financing.downPayment,
+      -downPayment,
       financialMetrics.noi * 5 * 0.7, // 5 years of 70% cash flow
-      analysis.dealInput.financing.downPayment * 0.15, // Estimated tax benefits
+      downPayment * 0.15, // Estimated tax benefits
       analysis.dealInput.purchasePrice * 0.03 * 5, // 5 years of 3% appreciation
       0, // Will be calculated
     ]
@@ -112,15 +113,15 @@ export default function DealResults({ analysis }: DealResultsProps) {
 
   // Generate expense breakdown data
   const generateExpenseBreakdownData = () => {
-    const totalExpenses = analysis.dealInput.expenses.totalExpenses
+    const expenses = analysis.dealInput.operatingExpenses
     const breakdownLabels = ['Property Tax', 'Insurance', 'Management', 'Maintenance', 'Utilities', 'Other']
     const breakdownValues = [
-      totalExpenses * 0.25,
-      totalExpenses * 0.15,
-      totalExpenses * 0.20,
-      totalExpenses * 0.20,
-      totalExpenses * 0.10,
-      totalExpenses * 0.10,
+      expenses.propertyTax,
+      expenses.insurance,
+      expenses.propertyManagement,
+      expenses.maintenance,
+      expenses.utilities,
+      expenses.other,
     ]
 
     return {
