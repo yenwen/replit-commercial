@@ -37,6 +37,16 @@ export default function RentRollStep({
 }: RentRollStepProps) {
   const [rentRoll, setRentRoll] = useState<RentRollUnit[]>(data.rentRoll || [])
   const [vacancyRate, setVacancyRate] = useState(data.vacancyRate || 0)
+  const [showBulkAdd, setShowBulkAdd] = useState(false)
+  const [bulkData, setBulkData] = useState({
+    count: 1,
+    unitType: 'Standard',
+    bedrooms: 1,
+    bathrooms: 1,
+    squareFootage: 0,
+    monthlyRent: 0,
+    occupied: true
+  })
   const toast = useToast()
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -76,6 +86,39 @@ export default function RentRollStep({
     const updatedRentRoll = [...rentRoll, newUnit]
     setRentRoll(updatedRentRoll)
     onDataChange({ rentRoll: updatedRentRoll, vacancyRate })
+  }
+
+  const addBulkUnits = () => {
+    const newUnits: RentRollUnit[] = []
+    for (let i = 0; i < bulkData.count; i++) {
+      newUnits.push({
+        unitNumber: `Unit ${rentRoll.length + i + 1}`,
+        unitType: bulkData.unitType,
+        bedrooms: bulkData.bedrooms,
+        bathrooms: bulkData.bathrooms,
+        squareFootage: bulkData.squareFootage,
+        monthlyRent: bulkData.monthlyRent,
+        occupied: bulkData.occupied
+      })
+    }
+    const updatedRentRoll = [...rentRoll, ...newUnits]
+    setRentRoll(updatedRentRoll)
+    onDataChange({ rentRoll: updatedRentRoll, vacancyRate })
+    setShowBulkAdd(false)
+    setBulkData({
+      count: 1,
+      unitType: 'Standard',
+      bedrooms: 1,
+      bathrooms: 1,
+      squareFootage: 0,
+      monthlyRent: 0,
+      occupied: true
+    })
+    toast({
+      title: 'Units added',
+      description: `Added ${bulkData.count} units successfully`,
+      status: 'success',
+    })
   }
 
   const removeUnit = (index: number) => {
@@ -146,10 +189,129 @@ export default function RentRollStep({
         <Box>
           <HStack justify="space-between" mb={4}>
             <Text fontWeight="semibold">Rent Roll Units</Text>
-            <Button colorScheme="brand" size="sm" onClick={addUnit}>
-              + Add Unit
-            </Button>
+            <HStack spacing={2}>
+              <Button variant="outline" size="sm" onClick={() => setShowBulkAdd(!showBulkAdd)}>
+                + Bulk Add
+              </Button>
+              <Button colorScheme="brand" size="sm" onClick={addUnit}>
+                + Add Unit
+              </Button>
+            </HStack>
           </HStack>
+
+          {showBulkAdd && (
+            <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={4} mb={4}>
+              <Text fontWeight="semibold" mb={3}>Bulk Add Units</Text>
+              <VStack spacing={3} align="stretch">
+                <HStack spacing={4}>
+                  <FormControl flex="1">
+                    <FormLabel fontSize="sm">Number of Units</FormLabel>
+                    <NumberInput
+                      value={bulkData.count}
+                      onChange={(_, value) => setBulkData(prev => ({ ...prev, count: value || 1 }))}
+                      min={1}
+                      size="sm"
+                    >
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                  </FormControl>
+                  <FormControl flex="1">
+                    <FormLabel fontSize="sm">Unit Type</FormLabel>
+                    <input
+                      value={bulkData.unitType}
+                      onChange={(e) => setBulkData(prev => ({ ...prev, unitType: e.target.value }))}
+                      style={{ 
+                        padding: '4px 8px', 
+                        border: '1px solid #e2e8f0', 
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        width: '100%'
+                      }}
+                      placeholder="e.g., 1BR, 2BR, Studio"
+                    />
+                  </FormControl>
+                </HStack>
+                <HStack spacing={4}>
+                  <FormControl flex="1">
+                    <FormLabel fontSize="sm">Bedrooms</FormLabel>
+                    <NumberInput
+                      value={bulkData.bedrooms}
+                      onChange={(_, value) => setBulkData(prev => ({ ...prev, bedrooms: value || 0 }))}
+                      min={0}
+                      size="sm"
+                    >
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                  </FormControl>
+                  <FormControl flex="1">
+                    <FormLabel fontSize="sm">Bathrooms</FormLabel>
+                    <NumberInput
+                      value={bulkData.bathrooms}
+                      onChange={(_, value) => setBulkData(prev => ({ ...prev, bathrooms: value || 0 }))}
+                      min={0}
+                      size="sm"
+                    >
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                  </FormControl>
+                </HStack>
+                <HStack spacing={4}>
+                  <FormControl flex="1">
+                    <FormLabel fontSize="sm">Square Footage</FormLabel>
+                    <NumberInput
+                      value={bulkData.squareFootage}
+                      onChange={(_, value) => setBulkData(prev => ({ ...prev, squareFootage: value || 0 }))}
+                      min={0}
+                      size="sm"
+                    >
+                      <NumberInputField />
+                    </NumberInput>
+                  </FormControl>
+                  <FormControl flex="1">
+                    <FormLabel fontSize="sm">Monthly Rent</FormLabel>
+                    <NumberInput
+                      value={bulkData.monthlyRent}
+                      onChange={(_, value) => setBulkData(prev => ({ ...prev, monthlyRent: value || 0 }))}
+                      min={0}
+                      size="sm"
+                    >
+                      <NumberInputField />
+                    </NumberInput>
+                  </FormControl>
+                </HStack>
+                <HStack justify="space-between" align="center">
+                  <HStack>
+                    <Text fontSize="sm">Occupied:</Text>
+                    <input
+                      type="checkbox"
+                      checked={bulkData.occupied}
+                      onChange={(e) => setBulkData(prev => ({ ...prev, occupied: e.target.checked }))}
+                    />
+                  </HStack>
+                  <HStack spacing={2}>
+                    <Button size="sm" variant="ghost" onClick={() => setShowBulkAdd(false)}>
+                      Cancel
+                    </Button>
+                    <Button size="sm" colorScheme="brand" onClick={addBulkUnits}>
+                      Add {bulkData.count} Units
+                    </Button>
+                  </HStack>
+                </HStack>
+              </VStack>
+            </Box>
+          )}
 
           <Box overflowX="auto">
             <Table variant="simple" size="sm">
