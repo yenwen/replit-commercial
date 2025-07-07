@@ -1,4 +1,6 @@
 
+'use client'
+
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 import { Toaster } from 'react-hot-toast'
 import './globals.css'
