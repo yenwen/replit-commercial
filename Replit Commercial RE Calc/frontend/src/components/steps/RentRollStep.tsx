@@ -24,7 +24,6 @@ import {
   IconButton,
   useToast
 } from '@chakra-ui/react'
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
 import { useDropzone } from 'react-dropzone'
 import { DealInput, RentRollUnit } from '@/types'
 
@@ -148,8 +147,8 @@ export default function RentRollStep({
         <Box>
           <HStack justify="space-between" mb={4}>
             <Text fontWeight="semibold">Rent Roll Units</Text>
-            <Button leftIcon={<AddIcon />} onClick={addUnit} size="sm">
-              Add Unit
+            <Button colorScheme="brand" size="sm" onClick={addUnit}>
+              + Add Unit
             </Button>
           </HStack>
 
@@ -232,14 +231,14 @@ export default function RentRollStep({
                       />
                     </Td>
                     <Td>
-                      <IconButton
-                        aria-label="Delete unit"
-                        icon={<DeleteIcon />}
-                        size="sm"
-                        onClick={() => removeUnit(index)}
-                        colorScheme="red"
-                        variant="ghost"
-                      />
+                      <Button
+                          size="sm"
+                          variant="ghost"
+                          colorScheme="red"
+                          onClick={() => removeUnit(index)}
+                        >
+                          ×
+                        </Button>
                     </Td>
                   </Tr>
                 ))}
@@ -250,4 +249,4 @@ export default function RentRollStep({
       </VStack>
     </Box>
   )
-} 
+}
