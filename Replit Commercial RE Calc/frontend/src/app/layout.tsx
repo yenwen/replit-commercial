@@ -1,32 +1,30 @@
-
 'use client'
 
-import { ChakraProvider, extendTheme } from '@chakra-ui/react'
-import { Toaster } from 'react-hot-toast'
+import { Inter } from 'next/font/google'
+import { ChakraProvider, createSystem, defaultConfig } from '@chakra-ui/react'
 import './globals.css'
 
-const theme = extendTheme({
-  colors: {
-    brand: {
-      50: '#f0f9ff',
-      100: '#e0f2fe',
-      200: '#bae6fd',
-      300: '#7dd3fc',
-      400: '#38bdf8',
-      500: '#0ea5e9',
-      600: '#0284c7',
-      700: '#0369a1',
-      800: '#075985',
-      900: '#0c4a6e'
-    }
+const inter = Inter({ subsets: ['latin'] })
+
+const system = createSystem(defaultConfig, {
+  theme: {
+    tokens: {
+      colors: {
+        brand: {
+          50: { value: '#e6f3ff' },
+          100: { value: '#b3d9ff' },
+          200: { value: '#80bfff' },
+          300: { value: '#4da6ff' },
+          400: { value: '#1a8cff' },
+          500: { value: '#0073e6' },
+          600: { value: '#005bb3' },
+          700: { value: '#004280' },
+          800: { value: '#002a4d' },
+          900: { value: '#00111a' },
+        },
+      },
+    },
   },
-  components: {
-    Button: {
-      defaultProps: {
-        colorScheme: 'brand'
-      }
-    }
-  }
 })
 
 export default function RootLayout({
@@ -36,10 +34,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <ChakraProvider theme={theme}>
+      <body className={inter.className}>
+        <ChakraProvider value={system}>
           {children}
-          <Toaster position="top-right" />
         </ChakraProvider>
       </body>
     </html>
