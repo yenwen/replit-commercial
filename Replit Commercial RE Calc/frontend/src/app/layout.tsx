@@ -1,4 +1,6 @@
-import { ChakraProvider, extendTheme } from '@chakra-ui/react'
+
+import { ChakraProvider } from '@chakra-ui/react'
+import { extendTheme } from '@chakra-ui/react'
 import { Toaster } from 'react-hot-toast'
 import './globals.css'
 
@@ -41,4 +43,4 @@ export default function RootLayout({
       </body>
     </html>
   )
-} 
+}
