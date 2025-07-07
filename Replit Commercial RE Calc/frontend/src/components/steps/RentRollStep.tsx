@@ -242,9 +242,11 @@ export default function RentRollStep({
                       value={bulkData.bedrooms}
                       onChange={(_, value) => setBulkData(prev => ({ ...prev, bedrooms: value || 0 }))}
                       min={0}
+                      precision={1}
+                      step={0.5}
                       size="sm"
                     >
-                      <NumberInputField />
+                      <NumberInputField placeholder="e.g., 2.5" />
                       <NumberInputStepper>
                         <NumberIncrementStepper />
                         <NumberDecrementStepper />
@@ -257,9 +259,11 @@ export default function RentRollStep({
                       value={bulkData.bathrooms}
                       onChange={(_, value) => setBulkData(prev => ({ ...prev, bathrooms: value || 0 }))}
                       min={0}
+                      precision={1}
+                      step={0.5}
                       size="sm"
                     >
-                      <NumberInputField />
+                      <NumberInputField placeholder="e.g., 1.5" />
                       <NumberInputStepper>
                         <NumberIncrementStepper />
                         <NumberDecrementStepper />
@@ -274,9 +278,11 @@ export default function RentRollStep({
                       value={bulkData.squareFootage}
                       onChange={(_, value) => setBulkData(prev => ({ ...prev, squareFootage: value || 0 }))}
                       min={0}
+                      precision={1}
+                      step={0.5}
                       size="sm"
                     >
-                      <NumberInputField />
+                      <NumberInputField placeholder="e.g., 850.5" />
                     </NumberInput>
                   </FormControl>
                   <FormControl flex="1">
@@ -285,9 +291,11 @@ export default function RentRollStep({
                       value={bulkData.monthlyRent}
                       onChange={(_, value) => setBulkData(prev => ({ ...prev, monthlyRent: value || 0 }))}
                       min={0}
+                      precision={2}
+                      step={0.25}
                       size="sm"
                     >
-                      <NumberInputField />
+                      <NumberInputField placeholder="e.g., 1250.75" />
                     </NumberInput>
                   </FormControl>
                 </HStack>

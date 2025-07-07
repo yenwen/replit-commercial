@@ -57,9 +57,10 @@ export default function ExitStrategyStep({
               onChange={(_, value) => handleChange('holdPeriod', value)}
               min={1}
               max={30}
-              precision={0}
+              precision={1}
+              step={0.5}
             >
-              <NumberInputField />
+              <NumberInputField placeholder="e.g., 5.5" />
               <NumberInputStepper>
                 <NumberIncrementStepper />
                 <NumberDecrementStepper />
@@ -72,11 +73,12 @@ export default function ExitStrategyStep({
             <NumberInput
               value={exitAssumptions.exitCapRate}
               onChange={(_, value) => handleChange('exitCapRate', value)}
-              min={2}
-              max={15}
-              precision={1}
+              min={1}
+              max={20}
+              precision={2}
+              step={0.25}
             >
-              <NumberInputField />
+              <NumberInputField placeholder="e.g., 6.75" />
               <NumberInputStepper>
                 <NumberIncrementStepper />
                 <NumberDecrementStepper />
@@ -89,11 +91,12 @@ export default function ExitStrategyStep({
             <NumberInput
               value={exitAssumptions.annualAppreciation}
               onChange={(_, value) => handleChange('annualAppreciation', value)}
-              min={-10}
-              max={20}
-              precision={1}
+              min={0}
+              max={15}
+              precision={2}
+              step={0.25}
             >
-              <NumberInputField />
+              <NumberInputField placeholder="e.g., 3.25" />
               <NumberInputStepper>
                 <NumberIncrementStepper />
                 <NumberDecrementStepper />
@@ -129,4 +132,4 @@ export default function ExitStrategyStep({
       </VStack>
     </Box>
   )
-} 
+}

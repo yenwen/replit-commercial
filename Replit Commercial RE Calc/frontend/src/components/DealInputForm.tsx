@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Box, Button, VStack, HStack } from '@chakra-ui/react'
+import { useState, useEffect } from 'react'
+import { Box, Button, VStack, HStack, useToast } from '@chakra-ui/react'
 import PropertyDetailsStep from './steps/PropertyDetailsStep'
 import RentRollStep from './steps/RentRollStep'
 import ExpensesFinancingStep from './steps/ExpensesFinancingStep'
@@ -22,9 +22,38 @@ export default function DealInputForm({
   isAnalyzing
 }: DealInputFormProps) {
   const [formData, setFormData] = useState<Partial<DealInput>>({})
+  const toast = useToast()
+
+  // Load saved progress on component mount
+  useEffect(() => {
+    const savedData = localStorage.getItem('dealInputProgress')
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData)
+        setFormData(parsedData)
+        toast({
+          title: 'Progress Restored',
+          description: 'Your previous progress has been loaded',
+          status: 'info',
+          duration: 3000,
+          isClosable: true,
+        })
+      } catch (error) {
+        console.error('Error parsing saved data:', error)
+      }
+    }
+  }, [toast])
 
   const handleStepData = (stepData: Partial<DealInput>) => {
-    setFormData(prev => ({ ...prev, ...stepData }))
+    const updatedData = { ...formData, ...stepData }
+    setFormData(updatedData)
+    
+    // Save to localStorage
+    try {
+      localStorage.setItem('dealInputProgress', JSON.stringify(updatedData))
+    } catch (error) {
+      console.error('Error saving progress:', error)
+    }
   }
 
   const isStepValid = () => {
@@ -103,6 +132,21 @@ export default function DealInputForm({
     }
   }
 
+  const handleClearProgress = () => {
+    if (window.confirm('Are you sure you want to clear all saved progress?')) {
+      localStorage.removeItem('dealInputProgress')
+      setFormData({})
+      onStepChange(0)
+      toast({
+        title: 'Progress Cleared',
+        description: 'All saved progress has been cleared',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
+    }
+  }
+
   const renderStep = () => {
     switch (currentStep) {
       case 0:
@@ -143,13 +187,23 @@ export default function DealInputForm({
       {renderStep()}
 
       <HStack spacing={4} justify="space-between" mt={8}>
-        <Button
-          onClick={handleBack}
-          isDisabled={currentStep === 0}
-          variant="outline"
-        >
-          Back
-        </Button>
+        <HStack spacing={2}>
+          <Button
+            onClick={handleBack}
+            isDisabled={currentStep === 0}
+            variant="outline"
+          >
+            Back
+          </Button>
+          <Button
+            onClick={handleClearProgress}
+            variant="ghost"
+            colorScheme="red"
+            size="sm"
+          >
+            Clear Progress
+          </Button>
+        </HStack>
 
         <Button
           onClick={handleNext}

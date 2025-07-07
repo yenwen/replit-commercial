@@ -59,9 +59,10 @@ export default function PropertyDetailsStep({
             value={data.purchasePrice || ''}
             onChange={(_, value) => handleChange('purchasePrice', value)}
             min={0}
-            precision={0}
+            precision={2}
+            step={0.01}
           >
-            <NumberInputField placeholder="Enter purchase price" />
+            <NumberInputField placeholder="Enter purchase price (e.g., 1500000.50)" />
             <NumberInputStepper>
               <NumberIncrementStepper />
               <NumberDecrementStepper />
@@ -87,4 +88,4 @@ export default function PropertyDetailsStep({
       </VStack>
     </Box>
   )
-} 
+}
