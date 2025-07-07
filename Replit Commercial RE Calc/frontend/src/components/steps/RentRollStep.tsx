@@ -21,7 +21,6 @@ import {
   Tr,
   Th,
   Td,
-  IconButton,
   useToast
 } from '@chakra-ui/react'
 import { useDropzone } from 'react-dropzone'
