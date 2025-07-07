@@ -34,7 +34,7 @@ export default function DealAnalyzer() {
       // Call backend API to analyze deal
       const apiUrl = process.env.NODE_ENV === 'production' 
         ? '/api/analyze-deal'
-        : 'http://0.0.0.0:5000/api/analyze-deal'
+        : `${window.location.protocol}//${window.location.hostname}:5000/api/analyze-deal`
       
       const response = await fetch(apiUrl, {
         method: 'POST',

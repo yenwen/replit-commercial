@@ -1,4 +1,3 @@
-
 'use client'
 
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
@@ -46,8 +45,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <ChakraProvider theme={theme}>
+      <body style={{ margin: 0, padding: 0, minHeight: '100vh', overflowY: 'auto' }}>
+        <ChakraProvider>
           {children}
         </ChakraProvider>
       </body>
