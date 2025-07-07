@@ -32,7 +32,11 @@ export default function DealAnalyzer() {
     
     try {
       // Call backend API to analyze deal
-      const response = await fetch('http://localhost:5000/api/analyze-deal', {
+      const apiUrl = process.env.NODE_ENV === 'production' 
+        ? '/api/analyze-deal'
+        : 'http://0.0.0.0:5000/api/analyze-deal'
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
