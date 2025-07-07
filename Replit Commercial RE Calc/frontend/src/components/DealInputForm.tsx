@@ -52,10 +52,14 @@ export default function DealInputForm({
       return
     }
 
+    console.log('Advancing to next step...')
     if (currentStep < 3) {
-      onStepChange(currentStep + 1)
+      const nextStep = currentStep + 1
+      console.log('Moving to step:', nextStep)
+      onStepChange(nextStep)
     } else {
       // Complete the form
+      console.log('Completing form with data:', formData)
       const completeData = formData as DealInput
       onComplete(completeData)
     }

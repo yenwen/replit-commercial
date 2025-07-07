@@ -55,9 +55,8 @@ export default function DealAnalyzer() {
   }
 
   const handleStepChange = (step: number) => {
-    if (step <= currentStep) {
-      setCurrentStep(step)
-    }
+    console.log('Step change requested from', currentStep, 'to', step)
+    setCurrentStep(step)
   }
 
   return (
@@ -94,4 +93,4 @@ export default function DealAnalyzer() {
       </VStack>
     </Box>
   )
-} 
+}
