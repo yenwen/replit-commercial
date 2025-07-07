@@ -32,7 +32,7 @@ class LoanTerms(BaseModel):
     interestOnlyMonths: int = 0
 
 class ExitAssumptions(BaseModel):
-    holdPeriod: int = 5
+    holdPeriod: float = 5.0
     exitCapRate: float = 6.5
     annualAppreciation: float = 3.0
     marketCapRate: float = 6.0
