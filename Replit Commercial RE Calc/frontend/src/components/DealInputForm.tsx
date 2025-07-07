@@ -27,7 +27,31 @@ export default function DealInputForm({
     setFormData(prev => ({ ...prev, ...stepData }))
   }
 
+  const isStepValid = () => {
+    switch (currentStep) {
+      case 0:
+        return formData.propertyType && formData.purchasePrice && formData.numberOfUnits
+      case 1:
+        return true // Rent roll can be empty initially
+      case 2:
+        return true // Expenses can have defaults
+      case 3:
+        return true // Exit strategy can have defaults
+      default:
+        return false
+    }
+  }
+
   const handleNext = () => {
+    console.log('Next button clicked, current step:', currentStep)
+    console.log('Form data:', formData)
+    console.log('Is step valid:', isStepValid())
+
+    if (!isStepValid()) {
+      console.log('Step validation failed')
+      return
+    }
+
     if (currentStep < 3) {
       onStepChange(currentStep + 1)
     } else {
@@ -96,10 +120,11 @@ export default function DealInputForm({
           colorScheme="brand"
           isLoading={isAnalyzing}
           loadingText="Analyzing..."
+          isDisabled={!isStepValid()}
         >
           {currentStep === 3 ? 'Analyze Deal' : 'Next'}
         </Button>
       </HStack>
     </Box>
   )
-} 
+}
