@@ -47,7 +47,9 @@ export default function ExpensesFinancingStep({
       ltv: 75,
       interestRate: 5.5,
       amortizationPeriod: 30,
-      monthlyPayment: 0
+      monthlyPayment: 0,
+      isInterestOnly: false,
+      interestOnlyMonths: 0
     }
   )
   const [capexBudget, setCapexBudget] = useState(data.capexBudget || 0)
@@ -65,7 +67,7 @@ export default function ExpensesFinancingStep({
     onDataChange({ operatingExpenses: updated, loanTerms, capexBudget })
   }
 
-  const handleLoanChange = (field: keyof LoanTerms, value: number) => {
+  const handleLoanChange = (field: keyof LoanTerms, value: number | boolean) => {
     const updated = { ...loanTerms, [field]: value }
     setLoanTerms(updated)
     onDataChange({ operatingExpenses, loanTerms: updated, capexBudget })
@@ -120,8 +122,14 @@ export default function ExpensesFinancingStep({
                 value={operatingExpenses.propertyTax}
                 onChange={(_, value) => handleExpenseChange('propertyTax', value)}
                 min={0}
+                precision={2}
+                step={0.25}
               >
                 <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
               </NumberInput>
             </FormControl>
 
@@ -131,8 +139,14 @@ export default function ExpensesFinancingStep({
                 value={operatingExpenses.insurance}
                 onChange={(_, value) => handleExpenseChange('insurance', value)}
                 min={0}
+                precision={2}
+                step={0.25}
               >
                 <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
               </NumberInput>
             </FormControl>
 
@@ -142,8 +156,14 @@ export default function ExpensesFinancingStep({
                 value={operatingExpenses.utilities}
                 onChange={(_, value) => handleExpenseChange('utilities', value)}
                 min={0}
+                precision={2}
+                step={0.25}
               >
                 <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
               </NumberInput>
             </FormControl>
 
@@ -153,8 +173,14 @@ export default function ExpensesFinancingStep({
                 value={operatingExpenses.maintenance}
                 onChange={(_, value) => handleExpenseChange('maintenance', value)}
                 min={0}
+                precision={2}
+                step={0.25}
               >
                 <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
               </NumberInput>
             </FormControl>
 
@@ -164,8 +190,14 @@ export default function ExpensesFinancingStep({
                 value={operatingExpenses.propertyManagement}
                 onChange={(_, value) => handleExpenseChange('propertyManagement', value)}
                 min={0}
+                precision={2}
+                step={0.25}
               >
                 <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
               </NumberInput>
             </FormControl>
 
@@ -175,8 +207,14 @@ export default function ExpensesFinancingStep({
                 value={operatingExpenses.other}
                 onChange={(_, value) => handleExpenseChange('other', value)}
                 min={0}
+                precision={2}
+                step={0.25}
               >
                 <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
               </NumberInput>
             </FormControl>
           </SimpleGrid>
@@ -184,58 +222,102 @@ export default function ExpensesFinancingStep({
 
         <Box>
           <Heading size="sm" mb={4}>Financing</Heading>
-          <SimpleGrid columns={2} spacing={4}>
-            <FormControl>
-              <FormLabel>Loan-to-Value (%)</FormLabel>
-              <NumberInput
-                value={loanTerms.ltv}
-                onChange={(_, value) => handleLoanChange('ltv', value)}
-                min={0}
-                max={100}
-                precision={1}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-            </FormControl>
+          <VStack spacing={4} align="stretch">
+            <SimpleGrid columns={2} spacing={4}>
+              <FormControl>
+                <FormLabel>Loan-to-Value (%)</FormLabel>
+                <NumberInput
+                  value={loanTerms.ltv}
+                  onChange={(_, value) => handleLoanChange('ltv', value)}
+                  min={0}
+                  max={100}
+                  precision={2}
+                  step={0.25}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </FormControl>
+
+              <FormControl>
+                <FormLabel>Interest Rate (%)</FormLabel>
+                <NumberInput
+                  value={loanTerms.interestRate}
+                  onChange={(_, value) => handleLoanChange('interestRate', value)}
+                  min={0}
+                  max={20}
+                  precision={3}
+                  step={0.25}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </FormControl>
+
+              <FormControl>
+                <FormLabel>Amortization Period (years)</FormLabel>
+                <NumberInput
+                  value={loanTerms.amortizationPeriod}
+                  onChange={(_, value) => handleLoanChange('amortizationPeriod', value)}
+                  min={1}
+                  max={50}
+                  precision={1}
+                  step={0.25}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </FormControl>
+            </SimpleGrid>
 
             <FormControl>
-              <FormLabel>Interest Rate (%)</FormLabel>
-              <NumberInput
-                value={loanTerms.interestRate}
-                onChange={(_, value) => handleLoanChange('interestRate', value)}
-                min={0}
-                max={20}
-                precision={2}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-            </FormControl>
+              <FormLabel>Interest-Only Period</FormLabel>
+              <HStack spacing={4}>
+                <Select
+                  value={loanTerms.isInterestOnly ? 'yes' : 'no'}
+                  onChange={(e) => {
+                    const isInterestOnly = e.target.value === 'yes'
+                    handleLoanChange('isInterestOnly', isInterestOnly ? 1 : 0)
+                    if (!isInterestOnly) {
+                      handleLoanChange('interestOnlyMonths', 0)
+                    }
+                  }}
+                  width="200px"
+                >
+                  <option value="no">No Interest-Only</option>
+                  <option value="yes">Interest-Only Period</option>
+                </Select>
 
-            <FormControl>
-              <FormLabel>Amortization Period (years)</FormLabel>
-              <NumberInput
-                value={loanTerms.amortizationPeriod}
-                onChange={(_, value) => handleLoanChange('amortizationPeriod', value)}
-                min={1}
-                max={50}
-                precision={0}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
+                {loanTerms.isInterestOnly && (
+                  <FormControl>
+                    <FormLabel>Interest-Only Months</FormLabel>
+                    <NumberInput
+                      value={loanTerms.interestOnlyMonths}
+                      onChange={(_, value) => handleLoanChange('interestOnlyMonths', value)}
+                      min={1}
+                      max={600}
+                      precision={0}
+                    >
+                      <NumberInputField placeholder="Enter months" />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                  </FormControl>
+                )}
+              </HStack>
             </FormControl>
-          </SimpleGrid>
+          </VStack>
         </Box>
 
         <FormControl>
@@ -244,7 +326,8 @@ export default function ExpensesFinancingStep({
             value={capexBudget}
             onChange={(_, value) => handleCapexChange(value)}
             min={0}
-            precision={0}
+            precision={2}
+            step={0.25}
           >
             <NumberInputField placeholder="Enter CapEx budget" />
             <NumberInputStepper>
@@ -256,4 +339,4 @@ export default function ExpensesFinancingStep({
       </VStack>
     </Box>
   )
-} 
+}

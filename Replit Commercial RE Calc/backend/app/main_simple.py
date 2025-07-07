@@ -28,6 +28,8 @@ class LoanTerms(BaseModel):
     ltv: float = 75.0
     interestRate: float = 5.5
     amortizationPeriod: int = 30
+    isInterestOnly: bool = False
+    interestOnlyMonths: int = 0
 
 class ExitAssumptions(BaseModel):
     holdPeriod: int = 5
@@ -117,10 +119,27 @@ def calculate_financial_metrics(deal_input: DealInput) -> FinancialMetrics:
     monthly_rate = deal_input.loanTerms.interestRate / 100 / 12
     num_payments = deal_input.loanTerms.amortizationPeriod * 12
     
-    if monthly_rate > 0:
-        monthly_payment = loan_amount * (monthly_rate * (1 + monthly_rate) ** num_payments) / ((1 + monthly_rate) ** num_payments - 1)
+    if deal_input.loanTerms.isInterestOnly and deal_input.loanTerms.interestOnlyMonths > 0:
+        # Interest-only payment for the specified period
+        interest_only_payment = loan_amount * monthly_rate
+        
+        # Calculate remaining amortization period after interest-only
+        remaining_months = num_payments - deal_input.loanTerms.interestOnlyMonths
+        
+        if remaining_months > 0 and monthly_rate > 0:
+            # Amortizing payment for remaining period
+            amortizing_payment = loan_amount * (monthly_rate * (1 + monthly_rate) ** remaining_months) / ((1 + monthly_rate) ** remaining_months - 1)
+        else:
+            amortizing_payment = loan_amount / remaining_months if remaining_months > 0 else 0
+        
+        # Use interest-only payment for the first year (assumption for NOI calculation)
+        monthly_payment = interest_only_payment
     else:
-        monthly_payment = loan_amount / num_payments
+        # Standard amortizing payment
+        if monthly_rate > 0:
+            monthly_payment = loan_amount * (monthly_rate * (1 + monthly_rate) ** num_payments) / ((1 + monthly_rate) ** num_payments - 1)
+        else:
+            monthly_payment = loan_amount / num_payments
     
     annual_debt_service = monthly_payment * 12
     

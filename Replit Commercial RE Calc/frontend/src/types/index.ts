@@ -27,6 +27,8 @@ export interface LoanTerms {
   interestRate: number
   amortizationPeriod: number
   monthlyPayment: number
+  isInterestOnly: boolean
+  interestOnlyMonths: number
 }
 
 export interface ExitAssumptions {
@@ -92,4 +94,4 @@ export interface ApiResponse<T> {
   success: boolean
   data?: T
   error?: string
-} 
+}
