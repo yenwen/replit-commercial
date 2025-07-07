@@ -3,6 +3,7 @@ run = "start commercial calculator"
 
 [nix]
 channel = "stable-24_05"
+packages = ["run"]
 
 [deployment]
 run = ["sh", "-c", "start commercial calculator"]
@@ -22,3 +23,11 @@ args = "cd \"Replit Commercial RE Calc/backend\" && python app/main_simple.py"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd \"Replit Commercial RE Calc/frontend\" && npm run dev"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[[ports]]
+localPort = 5000
+externalPort = 5000
