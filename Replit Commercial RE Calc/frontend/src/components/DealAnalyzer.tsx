@@ -26,12 +26,13 @@ export default function DealAnalyzer() {
   })
 
   const handleDealInputComplete = async (input: DealInput) => {
+    console.log('Starting deal analysis with input:', input)
     setDealInput(input)
     setIsAnalyzing(true)
     
     try {
-      // TODO: Call backend API to analyze deal
-      const response = await fetch('/api/analyze-deal', {
+      // Call backend API to analyze deal
+      const response = await fetch('http://localhost:5000/api/analyze-deal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,16 +40,22 @@ export default function DealAnalyzer() {
         body: JSON.stringify(input),
       })
       
+      console.log('API response status:', response.status)
+      
       if (response.ok) {
         const result = await response.json()
-        setAnalysis(result.data)
+        console.log('Analysis result:', result)
+        setAnalysis(result)
         setCurrentStep(4) // Move to results step
       } else {
-        throw new Error('Failed to analyze deal')
+        const errorText = await response.text()
+        console.error('API error response:', errorText)
+        throw new Error(`Failed to analyze deal: ${response.status} - ${errorText}`)
       }
     } catch (error) {
       console.error('Error analyzing deal:', error)
       // TODO: Show error toast
+      alert(`Error analyzing deal: ${error.message}`)
     } finally {
       setIsAnalyzing(false)
     }

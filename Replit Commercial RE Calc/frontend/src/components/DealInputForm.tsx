@@ -60,7 +60,39 @@ export default function DealInputForm({
     } else {
       // Complete the form
       console.log('Completing form with data:', formData)
-      const completeData = formData as DealInput
+      
+      // Ensure all required fields have default values
+      const completeData: DealInput = {
+        propertyType: formData.propertyType || 'multifamily',
+        purchasePrice: formData.purchasePrice || 0,
+        numberOfUnits: formData.numberOfUnits || 1,
+        rentRoll: formData.rentRoll || [],
+        vacancyRate: formData.vacancyRate || 5,
+        operatingExpenses: formData.operatingExpenses || {
+          propertyTax: 0,
+          insurance: 0,
+          utilities: 0,
+          maintenance: 0,
+          propertyManagement: 0,
+          other: 0
+        },
+        capexBudget: formData.capexBudget || 0,
+        loanTerms: formData.loanTerms || {
+          ltv: 75,
+          interestRate: 5.5,
+          amortizationPeriod: 30,
+          isInterestOnly: false,
+          interestOnlyMonths: 0
+        },
+        exitAssumptions: formData.exitAssumptions || {
+          holdPeriod: 5,
+          exitCapRate: 6.5,
+          annualAppreciation: 3.0,
+          marketCapRate: 6.0
+        }
+      }
+      
+      console.log('Complete deal data:', completeData)
       onComplete(completeData)
     }
   }
