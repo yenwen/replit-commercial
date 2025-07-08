@@ -31,6 +31,51 @@ export default function DealResults({ analysis }: DealResultsProps) {
     return `${value.toFixed(2)}%`
   }
 
+  const gradeMetric = (metricType: string, value: number, numberOfUnits: number = 1) => {
+    let grade = 'C'
+    let color = 'yellow'
+    
+    switch (metricType) {
+      case 'cap_rate':
+        if (value >= 8.0) { grade = 'A+'; color = 'green' }
+        else if (value >= 7.0) { grade = 'A'; color = 'green' }
+        else if (value >= 6.0) { grade = 'B'; color = 'blue' }
+        else if (value >= 5.0) { grade = 'C'; color = 'yellow' }
+        else { grade = 'D'; color = 'red' }
+        break
+      case 'cash_on_cash':
+        if (value >= 12) { grade = 'A+'; color = 'green' }
+        else if (value >= 10) { grade = 'A'; color = 'green' }
+        else if (value >= 8) { grade = 'B'; color = 'blue' }
+        else if (value >= 6) { grade = 'C'; color = 'yellow' }
+        else { grade = 'D'; color = 'red' }
+        break
+      case 'dscr':
+        if (value >= 1.5) { grade = 'A+'; color = 'green' }
+        else if (value >= 1.35) { grade = 'A'; color = 'green' }
+        else if (value >= 1.25) { grade = 'B'; color = 'blue' }
+        else if (value >= 1.15) { grade = 'C'; color = 'yellow' }
+        else { grade = 'D'; color = 'red' }
+        break
+      case 'irr':
+        if (value >= 15) { grade = 'A+'; color = 'green' }
+        else if (value >= 12) { grade = 'A'; color = 'green' }
+        else if (value >= 10) { grade = 'B'; color = 'blue' }
+        else if (value >= 8) { grade = 'C'; color = 'yellow' }
+        else { grade = 'D'; color = 'red' }
+        break
+      case 'equity_multiple':
+        if (value >= 2.5) { grade = 'A+'; color = 'green' }
+        else if (value >= 2.0) { grade = 'A'; color = 'green' }
+        else if (value >= 1.75) { grade = 'B'; color = 'blue' }
+        else if (value >= 1.5) { grade = 'C'; color = 'yellow' }
+        else { grade = 'D'; color = 'red' }
+        break
+    }
+    
+    return { grade, color }
+  }
+
   return (
     <Box>
       <VStack spacing={8} align="stretch">
@@ -50,31 +95,61 @@ export default function DealResults({ analysis }: DealResultsProps) {
             </Stat>
 
             <Stat>
-              <StatLabel>Going-In Cap Rate</StatLabel>
+              <StatLabel>
+                Going-In Cap Rate
+                <Box as="span" ml={2} px={2} py={1} borderRadius="md" fontSize="xs" fontWeight="bold" 
+                     bg={`${gradeMetric('cap_rate', financialMetrics.goingInCapRate).color}.500`} color="white">
+                  {gradeMetric('cap_rate', financialMetrics.goingInCapRate).grade}
+                </Box>
+              </StatLabel>
               <StatNumber>{formatPercentage(financialMetrics.goingInCapRate)}</StatNumber>
               <StatHelpText>NOI / Purchase Price</StatHelpText>
             </Stat>
 
             <Stat>
-              <StatLabel>Cash-on-Cash Return</StatLabel>
+              <StatLabel>
+                Cash-on-Cash Return
+                <Box as="span" ml={2} px={2} py={1} borderRadius="md" fontSize="xs" fontWeight="bold"
+                     bg={`${gradeMetric('cash_on_cash', financialMetrics.cashOnCashReturn).color}.500`} color="white">
+                  {gradeMetric('cash_on_cash', financialMetrics.cashOnCashReturn).grade}
+                </Box>
+              </StatLabel>
               <StatNumber>{formatPercentage(financialMetrics.cashOnCashReturn)}</StatNumber>
               <StatHelpText>Year 1 return</StatHelpText>
             </Stat>
 
             <Stat>
-              <StatLabel>Internal Rate of Return</StatLabel>
+              <StatLabel>
+                Internal Rate of Return
+                <Box as="span" ml={2} px={2} py={1} borderRadius="md" fontSize="xs" fontWeight="bold"
+                     bg={`${gradeMetric('irr', financialMetrics.irr).color}.500`} color="white">
+                  {gradeMetric('irr', financialMetrics.irr).grade}
+                </Box>
+              </StatLabel>
               <StatNumber>{formatPercentage(financialMetrics.irr)}</StatNumber>
               <StatHelpText>Projected IRR</StatHelpText>
             </Stat>
 
             <Stat>
-              <StatLabel>Equity Multiple</StatLabel>
+              <StatLabel>
+                Equity Multiple
+                <Box as="span" ml={2} px={2} py={1} borderRadius="md" fontSize="xs" fontWeight="bold"
+                     bg={`${gradeMetric('equity_multiple', financialMetrics.equityMultiple).color}.500`} color="white">
+                  {gradeMetric('equity_multiple', financialMetrics.equityMultiple).grade}
+                </Box>
+              </StatLabel>
               <StatNumber>{financialMetrics.equityMultiple.toFixed(2)}x</StatNumber>
               <StatHelpText>Total return multiple</StatHelpText>
             </Stat>
 
             <Stat>
-              <StatLabel>DSCR</StatLabel>
+              <StatLabel>
+                DSCR
+                <Box as="span" ml={2} px={2} py={1} borderRadius="md" fontSize="xs" fontWeight="bold"
+                     bg={`${gradeMetric('dscr', financialMetrics.dscr).color}.500`} color="white">
+                  {gradeMetric('dscr', financialMetrics.dscr).grade}
+                </Box>
+              </StatLabel>
               <StatNumber>{financialMetrics.dscr.toFixed(2)}</StatNumber>
               <StatHelpText>Debt Service Coverage</StatHelpText>
             </Stat>

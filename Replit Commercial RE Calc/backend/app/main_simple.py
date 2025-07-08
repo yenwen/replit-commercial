@@ -227,12 +227,68 @@ def calculate_financial_metrics(deal_input: DealInput) -> FinancialMetrics:
         exitValue=float(exit_value)
     )
 
+def grade_metric(metric_type: str, value: float, num_units: int = 1) -> str:
+    """Grade financial metrics with letter grades"""
+    
+    if metric_type == "cap_rate":
+        if value >= 8.0: return "A+"
+        elif value >= 7.0: return "A"
+        elif value >= 6.0: return "B"
+        elif value >= 5.0: return "C"
+        else: return "D"
+    
+    elif metric_type == "cash_on_cash":
+        if value >= 12: return "A+"
+        elif value >= 10: return "A"
+        elif value >= 8: return "B"
+        elif value >= 6: return "C"
+        else: return "D"
+    
+    elif metric_type == "dscr":
+        if value >= 1.5: return "A+"
+        elif value >= 1.35: return "A"
+        elif value >= 1.25: return "B"
+        elif value >= 1.15: return "C"
+        else: return "D"
+    
+    elif metric_type == "irr":
+        if value >= 15: return "A+"
+        elif value >= 12: return "A"
+        elif value >= 10: return "B"
+        elif value >= 8: return "C"
+        else: return "D"
+    
+    elif metric_type == "equity_multiple":
+        if value >= 2.5: return "A+"
+        elif value >= 2.0: return "A"
+        elif value >= 1.75: return "B"
+        elif value >= 1.5: return "C"
+        else: return "D"
+    
+    elif metric_type == "noi_per_unit":
+        noi_per_unit_monthly = (value / num_units) / 12 if num_units > 0 else 0
+        if noi_per_unit_monthly >= 150: return "A+"
+        elif noi_per_unit_monthly >= 125: return "A"
+        elif noi_per_unit_monthly >= 100: return "B"
+        elif noi_per_unit_monthly >= 75: return "C"
+        else: return "D"
+    
+    return "C"
+
 def generate_ai_analysis(deal_input: DealInput, metrics: FinancialMetrics) -> AIAnalysis:
-    """Generate AI-like analysis"""
+    """Generate AI-like analysis with grading"""
 
     summary_parts = []
     red_flags = []
     recommendations = []
+    
+    # Grade key metrics
+    cap_rate_grade = grade_metric("cap_rate", metrics.goingInCapRate)
+    cash_on_cash_grade = grade_metric("cash_on_cash", metrics.cashOnCashReturn)
+    dscr_grade = grade_metric("dscr", metrics.dscr)
+    irr_grade = grade_metric("irr", metrics.irr)
+    equity_multiple_grade = grade_metric("equity_multiple", metrics.equityMultiple)
+    noi_grade = grade_metric("noi_per_unit", metrics.noi, deal_input.numberOfUnits)
 
     # Analyze cap rate
     if metrics.goingInCapRate < 5:
@@ -260,11 +316,13 @@ def generate_ai_analysis(deal_input: DealInput, metrics: FinancialMetrics) -> AI
         red_flags.append("High vacancy rate may indicate market or property issues")
         recommendations.append("Investigate market conditions and property management")
 
-    # Generate summary
+    # Generate summary with grades
     if not summary_parts:
         summary_parts.append("This deal shows moderate returns with standard risk profile")
 
-    summary = f"This {deal_input.propertyType} property with {deal_input.numberOfUnits} units shows a {metrics.goingInCapRate:.1f}% cap rate and {metrics.cashOnCashReturn:.1f}% cash-on-cash return. {'. '.join(summary_parts)}."
+    grades_summary = f"Metric Grades: Cap Rate {cap_rate_grade} ({metrics.goingInCapRate:.1f}%), Cash-on-Cash {cash_on_cash_grade} ({metrics.cashOnCashReturn:.1f}%), DSCR {dscr_grade} ({metrics.dscr:.2f}x), IRR {irr_grade} ({metrics.irr:.1f}%), Equity Multiple {equity_multiple_grade} ({metrics.equityMultiple:.1f}x), NOI/Unit {noi_grade}"
+    
+    summary = f"This {deal_input.propertyType} property with {deal_input.numberOfUnits} units analysis: {grades_summary}. {'. '.join(summary_parts)}."
 
     return AIAnalysis(
         summary=summary,
