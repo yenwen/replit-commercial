@@ -190,6 +190,32 @@ export default function DealResults({ analysis }: DealResultsProps) {
           </SimpleGrid>
         </Box>
 
+        {/* Overall Grade Section */}
+        <Box bg="gray.50" p={6} borderRadius="lg" border="2px solid" borderColor="gray.200">
+          <Heading size="md" mb={4} textAlign="center">Overall Investment Grade</Heading>
+          <VStack spacing={4}>
+            <Box textAlign="center">
+              <Text fontSize="4xl" fontWeight="bold" 
+                    color={aiAnalysis.summary.includes("STRONG BUY") ? "green.500" : 
+                          aiAnalysis.summary.includes("BUY") ? "blue.500" : 
+                          aiAnalysis.summary.includes("HOLD") ? "yellow.500" : "red.500"}>
+                {aiAnalysis.summary.split("OVERALL GRADE: ")[1]?.split(" - ")[0] || "N/A"}
+              </Text>
+              <Text fontSize="xl" fontWeight="semibold" mt={2}
+                    color={aiAnalysis.summary.includes("STRONG BUY") ? "green.600" : 
+                          aiAnalysis.summary.includes("BUY") ? "blue.600" : 
+                          aiAnalysis.summary.includes("HOLD") ? "yellow.600" : "red.600"}>
+                {aiAnalysis.summary.split(" - ")[1]?.split(".")[0] || "N/A"}
+              </Text>
+            </Box>
+            <Box textAlign="center" maxW="600px">
+              <Text color="gray.700" fontSize="lg">
+                {aiAnalysis.summary.split(". ")[1]?.split(" Analysis:")[0] || "Investment analysis not available"}
+              </Text>
+            </Box>
+          </VStack>
+        </Box>
+
         {/* AI Analysis */}
         <Box>
           <Heading size="md" mb={4}>AI Investment Analysis</Heading>

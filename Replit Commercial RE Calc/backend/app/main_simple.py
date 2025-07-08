@@ -289,6 +289,40 @@ def generate_ai_analysis(deal_input: DealInput, metrics: FinancialMetrics) -> AI
     irr_grade = grade_metric("irr", metrics.irr)
     equity_multiple_grade = grade_metric("equity_multiple", metrics.equityMultiple)
     noi_grade = grade_metric("noi_per_unit", metrics.noi, deal_input.numberOfUnits)
+    
+    # Calculate overall grade based on key metrics
+    grade_points = {
+        "A+": 4.3, "A": 4.0, "B": 3.0, "C": 2.0, "D": 1.0
+    }
+    
+    # Weight metrics by importance
+    weighted_score = (
+        grade_points.get(cap_rate_grade, 1.0) * 0.25 +  # 25% weight
+        grade_points.get(cash_on_cash_grade, 1.0) * 0.25 +  # 25% weight
+        grade_points.get(irr_grade, 1.0) * 0.25 +  # 25% weight
+        grade_points.get(dscr_grade, 1.0) * 0.15 +  # 15% weight
+        grade_points.get(equity_multiple_grade, 1.0) * 0.10  # 10% weight
+    )
+    
+    # Convert weighted score to letter grade
+    if weighted_score >= 4.0:
+        overall_grade = "A+"
+        investment_recommendation = "STRONG BUY"
+    elif weighted_score >= 3.5:
+        overall_grade = "A"
+        investment_recommendation = "BUY"
+    elif weighted_score >= 3.0:
+        overall_grade = "B+"
+        investment_recommendation = "BUY"
+    elif weighted_score >= 2.5:
+        overall_grade = "B"
+        investment_recommendation = "HOLD/CONSIDER"
+    elif weighted_score >= 2.0:
+        overall_grade = "C"
+        investment_recommendation = "AVOID"
+    else:
+        overall_grade = "D"
+        investment_recommendation = "AVOID"
 
     # Analyze cap rate
     if metrics.goingInCapRate < 5:
@@ -322,7 +356,18 @@ def generate_ai_analysis(deal_input: DealInput, metrics: FinancialMetrics) -> AI
 
     grades_summary = f"Metric Grades: Cap Rate {cap_rate_grade} ({metrics.goingInCapRate:.1f}%), Cash-on-Cash {cash_on_cash_grade} ({metrics.cashOnCashReturn:.1f}%), DSCR {dscr_grade} ({metrics.dscr:.2f}x), IRR {irr_grade} ({metrics.irr:.1f}%), Equity Multiple {equity_multiple_grade} ({metrics.equityMultiple:.1f}x), NOI/Unit {noi_grade}"
     
-    summary = f"This {deal_input.propertyType} property with {deal_input.numberOfUnits} units analysis: {grades_summary}. {'. '.join(summary_parts)}."
+    # Generate investment recommendation explanation
+    investment_explanation = ""
+    if investment_recommendation == "STRONG BUY":
+        investment_explanation = "This deal shows exceptional returns across all key metrics. The combination of strong cash flow, solid debt coverage, and attractive cap rate makes this a premium investment opportunity."
+    elif investment_recommendation == "BUY":
+        investment_explanation = "This is a solid investment opportunity with good returns and manageable risk. The metrics indicate this property should perform well in the current market."
+    elif investment_recommendation == "HOLD/CONSIDER":
+        investment_explanation = "This deal has mixed results. While some metrics are acceptable, consider negotiating better terms or look for ways to improve performance before proceeding."
+    else:
+        investment_explanation = "This deal does not meet standard investment criteria. The returns are below market expectations and/or the risk profile is too high for most investors."
+    
+    summary = f"OVERALL GRADE: {overall_grade} - {investment_recommendation}. {investment_explanation} Analysis: {grades_summary}. {'. '.join(summary_parts)}."
 
     return AIAnalysis(
         summary=summary,
