@@ -1,7 +1,6 @@
 'use client'
 
-import { Box, Container, Heading, Text, VStack, HStack, Badge, Icon } from '@chakra-ui/react'
-import { FiTrendingUp, FiDollarSign, FiPieChart } from 'react-icons/fi'
+import { Box, Container, Heading, Text, VStack, HStack, Badge } from '@chakra-ui/react'
 import DealAnalyzer from '@/components/DealAnalyzer'
 
 export default function Home() {
@@ -25,16 +24,13 @@ export default function Home() {
             {/* Feature highlights */}
             <HStack spacing={8} mt={6} flexWrap="wrap" justify="center">
               <HStack spacing={2} color="gray.600">
-                <Icon as={FiTrendingUp} color="brand.500" />
-                <Text fontSize="sm" fontWeight="600">IRR & Cash Flow Analysis</Text>
+                <Text fontSize="sm" fontWeight="600">📈 IRR & Cash Flow Analysis</Text>
               </HStack>
               <HStack spacing={2} color="gray.600">
-                <Icon as={FiDollarSign} color="brand.500" />
-                <Text fontSize="sm" fontWeight="600">Investment Grading</Text>
+                <Text fontSize="sm" fontWeight="600">💰 Investment Grading</Text>
               </HStack>
               <HStack spacing={2} color="gray.600">
-                <Icon as={FiPieChart} color="brand.500" />
-                <Text fontSize="sm" fontWeight="600">Sensitivity Analysis</Text>
+                <Text fontSize="sm" fontWeight="600">📊 Sensitivity Analysis</Text>
               </HStack>
             </HStack>
           </VStack>

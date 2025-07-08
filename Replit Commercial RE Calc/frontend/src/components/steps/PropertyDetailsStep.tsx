@@ -14,7 +14,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Heading,
-  Text,
+  Text as ChakraText,
   Tooltip,
   HStack,
   Icon,
@@ -24,7 +24,6 @@ import {
   FormHelperText
 } from '@chakra-ui/react'
 import { DealInput, PropertyType } from '@/types'
-import { FiHome, FiInfo, FiDollarSign, FiUsers } from 'react-icons/fi'
 
 interface PropertyDetailsStepProps {
   data: Partial<DealInput>
@@ -170,11 +169,11 @@ export default function PropertyDetailsStep({
           <HStack spacing={3}>
             <Icon as={FiInfo} color="blue.500" />
             <Box>
-              <Text fontSize="sm" fontWeight="600" color="blue.800">Getting Started Tip</Text>
-              <Text fontSize="sm" color="blue.700">
+              <ChakraText fontSize="sm" fontWeight="600" color="blue.800">Getting Started Tip</ChakraText>
+              <ChakraText fontSize="sm" color="blue.700">
                 Don't worry if you don't have exact numbers yet. You can always adjust these values later 
                 using our sensitivity analysis tools to see how changes affect your returns.
-              </Text>
+              </ChakraText>
             </Box>
           </HStack>
         </Box>
