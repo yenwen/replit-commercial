@@ -22,76 +22,9 @@ import {
   Icon,
   Flex,
   Badge,
-  InputGroup,
-  InputLeftElement,
 } from '@chakra-ui/react'
 import { FiInfo, FiHome, FiDollarSign, FiUsers } from 'react-icons/fi'
 import { DealInput, PropertyType } from '@/types'
-
-interface PropertyDetailsStepProps {
-  data: Partial<DealInput>
-  onDataChange: (data: Partial<DealInput>) => void
-}
-
-export default function PropertyDetailsStep({
-  data,
-  onDataChange
-}: PropertyDetailsStepProps) {
-  const handleChange = (field: keyof DealInput, value: any) => {
-    onDataChange({ [field]: value })
-  }
-
-  return (
-    <Box maxW="4xl" mx="auto" p={6}>
-      <VStack spacing={8} align="stretch">
-        {/* Header */}
-        <Box textAlign="center">
-          <Heading size="lg" mb={4} color="gray.800">
-            Property Details
-          </Heading>
-          <ChakraText color="gray.600" fontSize="lg">
-            Enter basic information about your commercial property investment
-          </ChakraText>
-        </Box>
-
-        {/* Property Type Selection */}
-        <Card>
-          <CardBody>
-            <FormControl>
-              <Flex align="center" mb={4}>
-                <Icon as={FiHome} mr={3} color="brand.500" boxSize={6} />
-                <FormLabel mb={0} fontSize="lg" fontWeight="semibold">
-                  Property Type
-                </FormLabel>
-              </Flex>
-              <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={4}>
-                {['Multifamily', 'Office', 'Retail', 'Industrial', 'Mixed Use', 'Other'].map((type) => (
-                  <Box
-                    key={type}
-                    p={4}
-                    border="2px solid"
-                    borderColor={data.propertyType === type ? "brand.500" : "gray.200"}
-                    borderRadius="md"
-                    cursor="pointer"
-                    textAlign="center"
-                    bg={data.propertyType === type ? "brand.50" : "white"}
-                    _hover={{ borderColor: "brand.300", bg: "brand.25" }}
-                    onClick={() => handleChange('propertyType', type as PropertyType)}
-                  >
-                    <ChakraText fontWeight="semibold" color={data.propertyType === type ? "brand.700" : "gray.700"}>
-                      {type}
-                    </ChakraText>
-                  </Box>
-                ))}
-              </SimpleGrid>
-            </FormControl>
-          </CardBody>
-        </Card>
-
-        {/* Property Details */}
-        <Card>
-          <CardBody>
-            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
 
 interface PropertyDetailsStepProps {
   data: Partial<DealInput>
@@ -215,10 +148,8 @@ export default function PropertyDetailsStep({
                   onChange={(_, value) => handleChange('purchasePrice', value || 0)}
                   min={0}
                   size="lg"
-                  format={(val) => `$${val.toLocaleString()}`}
-                  parse={(val) => parseInt(val.replace(/\$|,/g, '')) || 0}
                 >
-                  <NumberInputField bg="white" placeholder="e.g., $2,500,000" />
+                  <NumberInputField bg="white" placeholder="e.g., 2500000" />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
                     <NumberDecrementStepper />
