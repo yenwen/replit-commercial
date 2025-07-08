@@ -1,7 +1,6 @@
-
 'use client'
-import { useState, useEffect } from 'react'
-import { Box, VStack, HStack, Heading, Text as ChakraText, SimpleGrid, Stat, StatLabel, StatNumber, StatHelpText, Alert, AlertIcon, Button, Table, Thead, Tbody, Tr, Th, Td, Card, CardBody, Spinner, Center } from '@chakra-ui/react'
+
+import { Box, VStack, HStack, Heading, Text as ChakraText, SimpleGrid, Stat, StatLabel, StatNumber, StatHelpText, Alert, AlertIcon, Button, Table, Thead, Tbody, Tr, Th, Td, Card, CardBody } from '@chakra-ui/react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts'
 import { DealAnalysis, DealInput } from '@/types'
 import SensitivityPanel from './SensitivityPanel'
@@ -17,33 +16,23 @@ const CashFlowChart = ({ initialCashFlow, growth }: { initialCashFlow: number, g
   }))
 
   return (
-<ResponsiveContainer width="100%" height={300}>
-<LineChart data={data}>
-<CartesianGrid strokeDasharray="3 3" />
-<XAxis dataKey="year" />
-<YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`} />
-<Tooltip
-formatter={(value: number, name: string) => [
-`$${value.toLocaleString()}`,
-name === 'cashFlow' ? 'Annual Cash Flow' : 'Cumulative Cash Flow'
-]}
-/>
-<Line type="monotone" dataKey="cashFlow" stroke="#3182CE" strokeWidth={2} name="cashFlow" />
-<Line type="monotone" dataKey="cumulativeCashFlow" stroke="#38A169" strokeWidth={2} name="cumulativeCashFlow" />
-</LineChart>
-</ResponsiveContainer>
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="year" />
+        <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`} />
+        <Tooltip 
+          formatter={(value: number, name: string) => [
+            `$${value.toLocaleString()}`, 
+            name === 'cashFlow' ? 'Annual Cash Flow' : 'Cumulative Cash Flow'
+          ]}
+        />
+        <Line type="monotone" dataKey="cashFlow" stroke="#3182CE" strokeWidth={2} name="cashFlow" />
+        <Line type="monotone" dataKey="cumulativeCashFlow" stroke="#38A169" strokeWidth={2} name="cumulativeCashFlow" />
+      </LineChart>
+    </ResponsiveContainer>
   )
 }
-
-// Dynamic imports for Recharts components
-import dynamic from 'next/dynamic'
-const DynamicCashFlowChart = dynamic(() => Promise.resolve(CashFlowChart), { ssr: false, loading: () => <Center h="300px"><Spinner /></Center> });
-const DynamicIRRWaterfall = dynamic(() => Promise.resolve(IRRWaterfall), { ssr: false, loading: () => <Center h="250px"><Spinner /></Center> });
-const DynamicSensitivityTable = dynamic(() => Promise.resolve(SensitivityTable), { ssr: false });
-const DynamicResponsiveContainer = dynamic(() => import('recharts').then((mod) => mod.ResponsiveContainer), { ssr: false, loading: () => <Center h="300px"><Spinner /></Center> });
-const DynamicLineChart = dynamic(() => import('recharts').then((mod) => mod.LineChart), { ssr: false });
-const DynamicBarChart = dynamic(() => import('recharts').then((mod) => mod.BarChart), { ssr: false });
-const DynamicTooltip = dynamic(() => import('recharts').then((mod) => mod.Tooltip), { ssr: false });
 
 // IRR Waterfall Component
 const IRRWaterfall = ({ cashOnCash, appreciation, totalIRR }: { 
@@ -58,21 +47,22 @@ const IRRWaterfall = ({ cashOnCash, appreciation, totalIRR }: {
   ]
 
   return (
-<ResponsiveContainer width="100%" height={250}>
-<BarChart data={data}>
-<CartesianGrid strokeDasharray="3 3" />
-<XAxis dataKey="name" />
-<YAxis tickFormatter={(value) => `${value.toFixed(1)}%`} />
-<Tooltip formatter={(value: number) => [`${value.toFixed(2)}%`, 'Return']} />
-<Bar dataKey="value">
-{data.map((entry, index) => (
-<Cell key={`cell-${index}`} fill={entry.color} />
-))}
-</Bar>
-</BarChart>
-</ResponsiveContainer>
+    <ResponsiveContainer width="100%" height={250}>
+      <BarChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis tickFormatter={(value) => `${value.toFixed(1)}%`} />
+        <Tooltip formatter={(value: number) => [`${value.toFixed(2)}%`, 'Return']} />
+        <Bar dataKey="value">
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.color} />
+          ))}
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
   )
 }
+
 // Sensitivity Table Component
 const SensitivityTable = ({ baseCapRate, baseIRR, baseCashOnCash }: {
   baseCapRate: number,
@@ -141,13 +131,6 @@ interface DealResultsProps {
 }
 
 export default function DealResults({ analysis, onReanalyze }: DealResultsProps) {
-  const [isClient, setIsClient] = useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-
   if (!analysis) {
     return (
       <Box textAlign="center" py={8}>
@@ -221,7 +204,7 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
       <VStack spacing={8} align="stretch">
         <Box>
           <Heading size="lg" mb={4}>Deal Analysis Results</Heading>
-          <ChakraText color="gray.600">Comprehensive analysis of your investment opportunity</ChakraText>
+          <Text color="gray.600">Comprehensive analysis of your investment opportunity</Text>
         </Box>
 
         {/* Grading Explanation */}
@@ -412,26 +395,26 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
             {/* Annual Cash Flow Chart */}
             <Box bg="white" p={6} borderRadius="lg" border="1px solid" borderColor="gray.200">
               <Heading size="sm" mb={4}>10-Year Cash Flow Projection</Heading>
-              <DynamicCashFlowChart 
+              <CashFlowChart 
                 initialCashFlow={financialMetrics.annualCashFlow}
                 growth={3} // 3% annual growth assumption
               />
             </Box>
-            
+
             {/* IRR Waterfall */}
             <Box bg="white" p={6} borderRadius="lg" border="1px solid" borderColor="gray.200">
               <Heading size="sm" mb={4}>IRR Components Breakdown</Heading>
-              <DynamicIRRWaterfall 
+              <IRRWaterfall 
                 cashOnCash={financialMetrics.cashOnCashReturn}
                 appreciation={financialMetrics.irr - financialMetrics.cashOnCashReturn}
                 totalIRR={financialMetrics.irr}
               />
             </Box>
-            
+
             {/* Sensitivity Table */}
             <Box bg="white" p={6} borderRadius="lg" border="1px solid" borderColor="gray.200">
               <Heading size="sm" mb={4}>Sensitivity Analysis Table</Heading>
-              <DynamicSensitivityTable 
+              <SensitivityTable 
                 baseCapRate={financialMetrics.goingInCapRate}
                 baseIRR={financialMetrics.irr}
                 baseCashOnCash={financialMetrics.cashOnCashReturn}
@@ -446,18 +429,15 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
             colorScheme="brand" 
             size="lg"
             onClick={() => {
-              if (isClient) {
-                const dataStr = JSON.stringify(analysis, null, 2)
-                const dataBlob = new Blob([dataStr], {type: 'application/json'})
-                const url = URL.createObjectURL(dataBlob)
-                const link = document.createElement('a')
-                link.href = url
-                link.download = `deal-analysis-${new Date().toISOString().split('T')[0]}.json`
-                link.click()
-                URL.revokeObjectURL(url)
-              }
+              const dataStr = JSON.stringify(analysis, null, 2)
+              const dataBlob = new Blob([dataStr], {type: 'application/json'})
+              const url = URL.createObjectURL(dataBlob)
+              const link = document.createElement('a')
+              link.href = url
+              link.download = `deal-analysis-${new Date().toISOString().split('T')[0]}.json`
+              link.click()
+              URL.revokeObjectURL(url)
             }}
-            disabled={!isClient} // Disable button server-side
           >
             Export Analysis
           </Button>
@@ -465,20 +445,16 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
             variant="outline" 
             size="lg"
             onClick={() => {
-              if (isClient) {
-                navigator.clipboard.writeText(window.location.href)
-                // You could add a toast here
-              }
+              navigator.clipboard.writeText(window.location.href)
+              // You could add a toast here
             }}
-            disabled={!isClient} // Disable button server-side
           >
             Copy Link
           </Button>
           <Button 
             variant="outline" 
             size="lg"
-            onClick={() => { if (isClient) window.print() }}
-            disabled={!isClient} // Disable button server-side
+            onClick={() => window.print()}
           >
             Print Report
           </Button>
