@@ -17,7 +17,6 @@ import {
   Text as ChakraText,
   Tooltip,
   HStack,
-  Icon,
   SimpleGrid,
   Card,
   CardBody,
@@ -53,14 +52,13 @@ export default function PropertyDetailsStep({
             <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
               <FormControl isRequired>
                 <HStack spacing={2} mb={2}>
-                  <Icon as={FiHome} color="brand.500" />
-                  <FormLabel mb={0}>Property Type</FormLabel>
+                  <FormLabel mb={0}>🏠 Property Type</FormLabel>
                   <Tooltip 
                     label="Different property types have different risk profiles and expected returns. Multifamily typically offers stable cash flow, while office/retail may have higher vacancy risk."
                     placement="top"
                   >
                     <Box>
-                      <Icon as={FiInfo} color="gray.400" cursor="help" />
+                      <ChakraText color="gray.400" cursor="help">ℹ️</ChakraText>
                     </Box>
                   </Tooltip>
                 </HStack>
@@ -82,8 +80,7 @@ export default function PropertyDetailsStep({
 
               <FormControl>
                 <HStack spacing={2} mb={2}>
-                  <Icon as={FiHome} color="brand.500" />
-                  <FormLabel mb={0}>Property Name</FormLabel>
+                  <FormLabel mb={0}>🏢 Property Name</FormLabel>
                 </HStack>
                 <Input
                   value={data.propertyName || ''}
@@ -97,14 +94,13 @@ export default function PropertyDetailsStep({
 
               <FormControl isRequired>
                 <HStack spacing={2} mb={2}>
-                  <Icon as={FiDollarSign} color="brand.500" />
-                  <FormLabel mb={0}>Purchase Price</FormLabel>
+                  <FormLabel mb={0}>💰 Purchase Price</FormLabel>
                   <Tooltip 
                     label="This is the total amount you'll pay to acquire the property, including any closing costs. This directly affects your return calculations and determines how much cash you'll need to invest."
                     placement="top"
                   >
                     <Box>
-                      <Icon as={FiInfo} color="gray.400" cursor="help" />
+                      <ChakraText color="gray.400" cursor="help">ℹ️</ChakraText>
                     </Box>
                   </Tooltip>
                 </HStack>
@@ -130,14 +126,13 @@ export default function PropertyDetailsStep({
 
               <FormControl isRequired>
                 <HStack spacing={2} mb={2}>
-                  <Icon as={FiUsers} color="brand.500" />
-                  <FormLabel mb={0}>Number of Units</FormLabel>
+                  <FormLabel mb={0}>👥 Number of Units</FormLabel>
                   <Tooltip 
                     label="Total rentable units in the property. For office/retail, count individual suites or spaces. More units typically mean more stable income but higher management complexity."
                     placement="top"
                   >
                     <Box>
-                      <Icon as={FiInfo} color="gray.400" cursor="help" />
+                      <ChakraText color="gray.400" cursor="help">ℹ️</ChakraText>
                     </Box>
                   </Tooltip>
                 </HStack>
@@ -167,7 +162,7 @@ export default function PropertyDetailsStep({
         {/* Helpful tip box */}
         <Box bg="blue.50" p={4} borderRadius="lg" border="1px solid" borderColor="blue.200">
           <HStack spacing={3}>
-            <Icon as={FiInfo} color="blue.500" />
+            <ChakraText color="blue.500" fontSize="lg">ℹ️</ChakraText>
             <Box>
               <ChakraText fontSize="sm" fontWeight="600" color="blue.800">Getting Started Tip</ChakraText>
               <ChakraText fontSize="sm" color="blue.700">
