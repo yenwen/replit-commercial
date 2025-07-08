@@ -172,8 +172,8 @@ export default function RentRollStep({
         <FormControl>
           <FormLabel>Vacancy Rate (%)</FormLabel>
           <NumberInput
-            value={vacancyRate}
-            onChange={(_, value) => handleVacancyRateChange(value)}
+            value={vacancyRate?.toString() || ''}
+            onChange={(_, value) => handleVacancyRateChange(value || 0)}
             min={0}
             max={100}
             precision={1}
@@ -275,7 +275,7 @@ export default function RentRollStep({
                   <FormControl flex="1">
                     <FormLabel fontSize="sm">Square Footage</FormLabel>
                     <NumberInput
-                      value={bulkData.squareFootage}
+                      value={bulkData.squareFootage?.toString() || ''}
                       onChange={(_, value) => setBulkData(prev => ({ ...prev, squareFootage: value || 0 }))}
                       min={0}
                       precision={1}
@@ -288,7 +288,7 @@ export default function RentRollStep({
                   <FormControl flex="1">
                     <FormLabel fontSize="sm">Monthly Rent</FormLabel>
                     <NumberInput
-                      value={bulkData.monthlyRent}
+                      value={bulkData.monthlyRent?.toString() || ''}
                       onChange={(_, value) => setBulkData(prev => ({ ...prev, monthlyRent: value || 0 }))}
                       min={0}
                       precision={2}

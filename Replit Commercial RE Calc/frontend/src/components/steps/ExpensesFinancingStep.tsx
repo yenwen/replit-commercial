@@ -101,8 +101,8 @@ export default function ExpensesFinancingStep({
           <FormControl>
             <FormLabel>Operating Expenses (% of Gross Income)</FormLabel>
             <NumberInput
-              value={expensePercentage}
-              onChange={(_, value) => setExpensePercentage(value)}
+              value={expensePercentage?.toString() || ''}
+              onChange={(_, value) => setExpensePercentage(value || 0)}
               min={0}
               max={100}
               precision={1}
@@ -119,7 +119,7 @@ export default function ExpensesFinancingStep({
             <FormControl>
               <FormLabel>Property Tax ($/year)</FormLabel>
               <NumberInput
-                value={operatingExpenses.propertyTax}
+                value={operatingExpenses.propertyTax?.toString() || ''}
                 onChange={(_, value) => handleExpenseChange('propertyTax', value)}
                 min={0}
                 precision={2}
@@ -136,7 +136,7 @@ export default function ExpensesFinancingStep({
             <FormControl>
               <FormLabel>Insurance ($/year)</FormLabel>
               <NumberInput
-                value={operatingExpenses.insurance}
+                value={operatingExpenses.insurance?.toString() || ''}
                 onChange={(_, value) => handleExpenseChange('insurance', value)}
                 min={0}
                 precision={2}
@@ -153,7 +153,7 @@ export default function ExpensesFinancingStep({
             <FormControl>
               <FormLabel>Utilities ($/year)</FormLabel>
               <NumberInput
-                value={operatingExpenses.utilities}
+                value={operatingExpenses.utilities?.toString() || ''}
                 onChange={(_, value) => handleExpenseChange('utilities', value)}
                 min={0}
                 precision={2}
