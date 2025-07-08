@@ -29,10 +29,14 @@ export default function DealAnalyzer() {
     console.log('Starting deal analysis with input:', input)
     setDealInput(input)
     setIsAnalyzing(true)
+    await analyzeDeal(input)
+    setIsAnalyzing(false)
+  }
 
+  const analyzeDeal = async (input: DealInput) => {
     try {
       // Call backend API to analyze deal
-      const apiUrl = process.env.NODE_ENV === 'production' 
+      const apiUrl = process.env.NODE_ENV === 'production'
         ? '/api/analyze-deal'
         : `${window.location.protocol}//${window.location.hostname}:5000/api/analyze-deal`
 
@@ -46,22 +50,21 @@ export default function DealAnalyzer() {
 
       console.log('API response status:', response.status)
 
-      if (response.ok) {
-        const result = await response.json()
-        console.log('Analysis result:', result)
-        setAnalysis(result)
-        setCurrentStep(4) // Move to results step
-      } else {
-        const errorText = await response.text()
-        console.error('API error response:', errorText)
-        throw new Error(`Failed to analyze deal: ${response.status} - ${errorText}`)
+      if (!response.ok) {
+        const errorData = await response.text()
+        console.error('API error response:', errorData)
+        throw new Error(`API returned ${response.status}`)
       }
+
+      const result = await response.json()
+      console.log('Analysis result:', result)
+
+      setAnalysis(result)
+      setCurrentStep(4) // Move to results step
+
     } catch (error) {
       console.error('Error analyzing deal:', error)
-      // TODO: Show error toast
-      alert(`Error analyzing deal: ${error.message}`)
-    } finally {
-      setIsAnalyzing(false)
+      // You might want to show an error message to the user here
     }
   }
 
@@ -99,7 +102,7 @@ export default function DealAnalyzer() {
             isAnalyzing={isAnalyzing}
           />
         ) : (
-          <DealResults analysis={analysis} />
+          <DealResults analysis={analysis} reanalyze={analyzeDeal} />
         )}
       </VStack>
     </Box>

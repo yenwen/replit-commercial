@@ -1,13 +1,15 @@
 'use client'
 
 import { Box, VStack, HStack, Heading, Text, SimpleGrid, Stat, StatLabel, StatNumber, StatHelpText, Alert, AlertIcon, Button } from '@chakra-ui/react'
-import { DealAnalysis } from '@/types'
+import { DealAnalysis, DealInput } from '@/types'
+import SensitivityPanel from './SensitivityPanel'
 
 interface DealResultsProps {
   analysis: DealAnalysis | null
+  onReanalyze?: (input: DealInput) => void
 }
 
-export default function DealResults({ analysis }: DealResultsProps) {
+export default function DealResults({ analysis, onReanalyze }: DealResultsProps) {
   if (!analysis) {
     return (
       <Box textAlign="center" py={8}>
@@ -215,6 +217,15 @@ export default function DealResults({ analysis }: DealResultsProps) {
             </Box>
           </VStack>
         </Box>
+
+        {/* Sensitivity Analysis */}
+        {onReanalyze && (
+          <SensitivityPanel
+            originalDealInput={analysis.dealInput}
+            originalMetrics={financialMetrics}
+            onAnalysisUpdate={onReanalyze}
+          />
+        )}
 
         {/* AI Analysis */}
         <Box>
