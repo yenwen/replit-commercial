@@ -221,7 +221,7 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
       <VStack spacing={8} align="stretch">
         <Box>
           <Heading size="lg" mb={4}>Deal Analysis Results</Heading>
-          <Text color="gray.600">Comprehensive analysis of your investment opportunity</Text>
+          <ChakraText color="gray.600">Comprehensive analysis of your investment opportunity</ChakraText>
         </Box>
 
         {/* Grading Explanation */}
