@@ -112,21 +112,23 @@ def calculate_financial_metrics(deal_input: DealInput) -> FinancialMetrics:
     vacancy_rate = deal_input.vacancyRate / 100
 
     # Calculate total rent from rent roll
-    total_monthly_rent = sum(unit.monthlyRent for unit in deal_input.rentRoll)
+    total_monthly_rent = 0
+    if deal_input.rentRoll:
+        total_monthly_rent = sum(float(unit.monthlyRent) for unit in deal_input.rentRoll)
 
     # If no rent roll data, estimate based on units and market assumptions
     if total_monthly_rent == 0 and num_units > 0:
         # Estimate $1,500 per unit per month as default for calculation purposes
         estimated_rent_per_unit = 1500
-        total_monthly_rent = num_units * estimated_rent_per_unit
+        total_monthly_rent = float(num_units * estimated_rent_per_unit)
 
-    annual_gross_income = total_monthly_rent * 12
+    annual_gross_income = float(total_monthly_rent * 12)
 
     # Apply vacancy
-    effective_gross_income = annual_gross_income * (1 - vacancy_rate)
+    effective_gross_income = float(annual_gross_income * (1 - vacancy_rate))
 
     # Operating expenses
-    total_expenses = (
+    total_expenses = float(
         deal_input.operatingExpenses.propertyTax +
         deal_input.operatingExpenses.insurance +
         deal_input.operatingExpenses.utilities +
@@ -137,10 +139,10 @@ def calculate_financial_metrics(deal_input: DealInput) -> FinancialMetrics:
 
     # If no operating expenses provided, estimate as 50% of effective gross income
     if total_expenses == 0 and effective_gross_income > 0:
-        total_expenses = effective_gross_income * 0.5
+        total_expenses = float(effective_gross_income * 0.5)
 
     # NOI calculation
-    noi = effective_gross_income - total_expenses
+    noi = float(effective_gross_income - total_expenses)
 
     # Safe division helper function
     def safe_divide(numerator, denominator, default=0):
@@ -151,71 +153,78 @@ def calculate_financial_metrics(deal_input: DealInput) -> FinancialMetrics:
     exit_cap_rate = deal_input.exitAssumptions.exitCapRate
 
     # Loan calculations
-    loan_amount = deal_input.loanTerms.loanAmount
+    loan_amount = float(deal_input.loanTerms.loanAmount) if deal_input.loanTerms.loanAmount else 0.0
 
     # If loan amount is 0, calculate from LTV
     if loan_amount == 0:
-        ltv = deal_input.loanTerms.ltv / 100
-        loan_amount = purchase_price * ltv
+        ltv = float(deal_input.loanTerms.ltv) / 100
+        loan_amount = float(purchase_price * ltv)
 
-    monthly_payment = deal_input.loanTerms.monthlyPayment
+    monthly_payment = float(deal_input.loanTerms.monthlyPayment) if deal_input.loanTerms.monthlyPayment else 0.0
 
     # If monthly payment is 0, calculate it
     if monthly_payment == 0 and loan_amount > 0:
-        interest_rate = deal_input.loanTerms.interestRate / 100 / 12
-        amort_months = deal_input.loanTerms.amortizationPeriod * 12
+        interest_rate = float(deal_input.loanTerms.interestRate) / 100 / 12
+        amort_months = int(deal_input.loanTerms.amortizationPeriod) * 12
 
         if deal_input.loanTerms.isInterestOnly:
-            monthly_payment = loan_amount * (deal_input.loanTerms.interestRate / 100 / 12)
+            monthly_payment = float(loan_amount * (deal_input.loanTerms.interestRate / 100 / 12))
         else:
-            if interest_rate > 0:
-                monthly_payment = loan_amount * (interest_rate * (1 + interest_rate)**amort_months) / ((1 + interest_rate)**amort_months - 1)
+            if interest_rate > 0 and amort_months > 0:
+                monthly_payment = float(loan_amount * (interest_rate * (1 + interest_rate)**amort_months) / ((1 + interest_rate)**amort_months - 1))
+            elif amort_months > 0:
+                monthly_payment = float(loan_amount / amort_months)
             else:
-                monthly_payment = loan_amount / amort_months
+                monthly_payment = 0.0
 
-    annual_debt_service = monthly_payment * 12
+    annual_debt_service = float(monthly_payment * 12)
 
     # DSCR
     dscr = safe_divide(noi, annual_debt_service, float('inf'))
 
     # Cash calculations
-    down_payment = purchase_price - loan_amount
-    cash_flow_before_tax = noi - annual_debt_service
-    cash_on_cash_return = safe_divide(cash_flow_before_tax, down_payment) * 100
+    down_payment = float(purchase_price - loan_amount)
+    cash_flow_before_tax = float(noi - annual_debt_service)
+    cash_on_cash_return = safe_divide(cash_flow_before_tax, down_payment) * 100 if down_payment > 0 else 0
 
     # IRR and NPV calculations (simplified)
-    annual_cash_flow = noi - annual_debt_service
-    annual_cash_flows = [annual_cash_flow] * deal_input.exitAssumptions.holdPeriod
-    exit_value = safe_divide(noi, exit_cap_rate / 100, purchase_price)
+    annual_cash_flow = float(noi - annual_debt_service)
+    hold_period_years = int(deal_input.exitAssumptions.holdPeriod) if deal_input.exitAssumptions.holdPeriod else 5
+    annual_cash_flows = [annual_cash_flow] * hold_period_years
+    
+    exit_cap_rate_decimal = float(exit_cap_rate) / 100 if exit_cap_rate > 0 else 0.065
+    exit_value = safe_divide(noi, exit_cap_rate_decimal, purchase_price)
 
     # Calculate remaining loan balance (simplified)
-    remaining_loan_balance = loan_amount * 0.8  # Approximate after hold period
-    final_cash_flow = annual_cash_flow + exit_value - remaining_loan_balance
-    annual_cash_flows[-1] = final_cash_flow
+    remaining_loan_balance = float(loan_amount * 0.8)  # Approximate after hold period
+    final_cash_flow = float(annual_cash_flow + exit_value - remaining_loan_balance)
+    
+    if len(annual_cash_flows) > 0:
+        annual_cash_flows[-1] = final_cash_flow
 
     # Simple IRR approximation
-    total_return = sum(annual_cash_flows)
-    hold_period = max(deal_input.exitAssumptions.holdPeriod, 1)  # Avoid division by zero
-    irr = safe_divide(total_return, down_payment) / hold_period * 100
+    total_return = float(sum(annual_cash_flows))
+    hold_period = max(hold_period_years, 1)  # Avoid division by zero
+    irr = safe_divide(total_return, down_payment) / hold_period * 100 if down_payment > 0 else 0
 
     # Update the deal input with calculated loan amount for consistency
     deal_input.loanTerms.loanAmount = loan_amount
     deal_input.loanTerms.monthlyPayment = monthly_payment
 
     return FinancialMetrics(
-        noi=noi,
-        goingInCapRate=going_in_cap_rate,
-        reversionCapRate=exit_cap_rate,
-        cashOnCashReturn=cash_on_cash_return,
-        stabilizedCashOnCash=cash_on_cash_return,
-        irr=irr,
-        equityMultiple=safe_divide((exit_value - remaining_loan_balance), down_payment),
-        breakEvenOccupancy=0,
-        dscr=dscr,
-        exitSalePrice=exit_value,
-        totalReturn=total_return,
-        annualCashFlow=annual_cash_flow,
-        exitValue=exit_value
+        noi=float(noi),
+        goingInCapRate=float(going_in_cap_rate),
+        reversionCapRate=float(exit_cap_rate),
+        cashOnCashReturn=float(cash_on_cash_return),
+        stabilizedCashOnCash=float(cash_on_cash_return),
+        irr=float(irr),
+        equityMultiple=float(safe_divide((exit_value - remaining_loan_balance), down_payment) if down_payment > 0 else 1.0),
+        breakEvenOccupancy=float(0),
+        dscr=float(dscr),
+        exitSalePrice=float(exit_value),
+        totalReturn=float(total_return),
+        annualCashFlow=float(annual_cash_flow),
+        exitValue=float(exit_value)
     )
 
 def generate_ai_analysis(deal_input: DealInput, metrics: FinancialMetrics) -> AIAnalysis:
