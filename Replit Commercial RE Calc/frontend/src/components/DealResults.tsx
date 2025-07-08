@@ -84,6 +84,25 @@ export default function DealResults({ analysis }: DealResultsProps) {
           <Text color="gray.600">Comprehensive analysis of your investment opportunity</Text>
         </Box>
 
+        {/* Grading Explanation */}
+        <Box bg="blue.50" p={4} borderRadius="md" border="1px solid" borderColor="blue.200">
+          <Heading size="sm" mb={3} color="blue.700">Metric Grading System</Heading>
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+            <VStack align="start" spacing={1}>
+              <Text fontWeight="semibold" fontSize="sm">Excellent (A+/A)</Text>
+              <Text fontSize="xs" color="gray.600">Top-tier investment metrics indicating strong value and returns</Text>
+            </VStack>
+            <VStack align="start" spacing={1}>
+              <Text fontWeight="semibold" fontSize="sm">Good (B)</Text>
+              <Text fontSize="xs" color="gray.600">Solid metrics meeting most investor requirements</Text>
+            </VStack>
+            <VStack align="start" spacing={1}>
+              <Text fontWeight="semibold" fontSize="sm">Needs Review (C/D)</Text>
+              <Text fontSize="xs" color="gray.600">Below-market performance requiring further analysis</Text>
+            </VStack>
+          </SimpleGrid>
+        </Box>
+
         {/* Key Metrics */}
         <Box>
           <Heading size="md" mb={4}>Key Financial Metrics</Heading>
@@ -91,7 +110,9 @@ export default function DealResults({ analysis }: DealResultsProps) {
             <Stat>
               <StatLabel>Net Operating Income</StatLabel>
               <StatNumber>{formatCurrency(financialMetrics.noi)}</StatNumber>
-              <StatHelpText>Annual NOI</StatHelpText>
+              <StatHelpText>
+                Annual NOI (Gross Income - Operating Expenses). This is the property's income after paying all operating costs but before debt service.
+              </StatHelpText>
             </Stat>
 
             <Stat>
@@ -103,7 +124,9 @@ export default function DealResults({ analysis }: DealResultsProps) {
                 </Box>
               </StatLabel>
               <StatNumber>{formatPercentage(financialMetrics.goingInCapRate)}</StatNumber>
-              <StatHelpText>NOI / Purchase Price</StatHelpText>
+              <StatHelpText>
+                NOI ÷ Purchase Price. Measures the unlevered yield on your investment. Higher cap rates indicate better value or higher risk markets.
+              </StatHelpText>
             </Stat>
 
             <Stat>
@@ -115,7 +138,9 @@ export default function DealResults({ analysis }: DealResultsProps) {
                 </Box>
               </StatLabel>
               <StatNumber>{formatPercentage(financialMetrics.cashOnCashReturn)}</StatNumber>
-              <StatHelpText>Year 1 return</StatHelpText>
+              <StatHelpText>
+                Annual Cash Flow ÷ Initial Cash Investment. Shows the return on your actual cash invested, accounting for leverage effects.
+              </StatHelpText>
             </Stat>
 
             <Stat>
@@ -127,7 +152,9 @@ export default function DealResults({ analysis }: DealResultsProps) {
                 </Box>
               </StatLabel>
               <StatNumber>{formatPercentage(financialMetrics.irr)}</StatNumber>
-              <StatHelpText>Projected IRR</StatHelpText>
+              <StatHelpText>
+                The annualized effective return rate including cash flows and exit proceeds. Accounts for time value of money over the hold period.
+              </StatHelpText>
             </Stat>
 
             <Stat>
@@ -139,7 +166,9 @@ export default function DealResults({ analysis }: DealResultsProps) {
                 </Box>
               </StatLabel>
               <StatNumber>{financialMetrics.equityMultiple.toFixed(2)}x</StatNumber>
-              <StatHelpText>Total return multiple</StatHelpText>
+              <StatHelpText>
+                Total Cash Returned ÷ Initial Investment. Shows how many times you get your money back over the investment period.
+              </StatHelpText>
             </Stat>
 
             <Stat>
@@ -151,7 +180,9 @@ export default function DealResults({ analysis }: DealResultsProps) {
                 </Box>
               </StatLabel>
               <StatNumber>{financialMetrics.dscr.toFixed(2)}</StatNumber>
-              <StatHelpText>Debt Service Coverage</StatHelpText>
+              <StatHelpText>
+                NOI ÷ Annual Debt Service. Measures ability to service debt. Lenders typically require 1.20x+ for loan approval.
+              </StatHelpText>
             </Stat>
           </SimpleGrid>
         </Box>
