@@ -53,7 +53,7 @@ export default function ExitStrategyStep({
           <FormControl isRequired>
             <FormLabel>Hold Period (years)</FormLabel>
             <NumberInput
-              value={exitAssumptions.holdPeriod}
+              value={exitAssumptions.holdPeriod?.toString() || ''}
               onChange={(_, value) => handleChange('holdPeriod', value)}
               min={1}
               max={30}
@@ -71,7 +71,7 @@ export default function ExitStrategyStep({
           <FormControl isRequired>
             <FormLabel>Exit Cap Rate (%)</FormLabel>
             <NumberInput
-              value={exitAssumptions.exitCapRate}
+              value={exitAssumptions.exitCapRate?.toString() || ''}
               onChange={(_, value) => handleChange('exitCapRate', value)}
               min={1}
               max={20}
@@ -89,7 +89,7 @@ export default function ExitStrategyStep({
           <FormControl isRequired>
             <FormLabel>Annual Appreciation (%)</FormLabel>
             <NumberInput
-              value={exitAssumptions.annualAppreciation}
+              value={exitAssumptions.annualAppreciation?.toString() || ''}
               onChange={(_, value) => handleChange('annualAppreciation', value)}
               min={0}
               max={15}
@@ -107,7 +107,7 @@ export default function ExitStrategyStep({
           <FormControl isRequired>
             <FormLabel>Market Cap Rate (%)</FormLabel>
             <NumberInput
-              value={exitAssumptions.marketCapRate}
+              value={exitAssumptions.marketCapRate?.toString() || ''}
               onChange={(_, value) => handleChange('marketCapRate', value)}
               min={2}
               max={15}

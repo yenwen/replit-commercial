@@ -146,7 +146,7 @@ export default function PropertyDetailsStep({
                   </Tooltip>
                 </Flex>
                 <NumberInput
-                  value={data.purchasePrice || ''}
+                  value={data.purchasePrice?.toString() || ''}
                   onChange={(_, value) => handleChange('purchasePrice', value || 0)}
                   min={0}
                   size="lg"

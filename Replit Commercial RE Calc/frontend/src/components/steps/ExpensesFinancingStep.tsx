@@ -170,7 +170,7 @@ export default function ExpensesFinancingStep({
             <FormControl>
               <FormLabel>Maintenance ($/year)</FormLabel>
               <NumberInput
-                value={operatingExpenses.maintenance}
+                value={operatingExpenses.maintenance?.toString() || ''}
                 onChange={(_, value) => handleExpenseChange('maintenance', value)}
                 min={0}
                 precision={2}
@@ -187,7 +187,7 @@ export default function ExpensesFinancingStep({
             <FormControl>
               <FormLabel>Property Management ($/year)</FormLabel>
               <NumberInput
-                value={operatingExpenses.propertyManagement}
+                value={operatingExpenses.propertyManagement?.toString() || ''}
                 onChange={(_, value) => handleExpenseChange('propertyManagement', value)}
                 min={0}
                 precision={2}
