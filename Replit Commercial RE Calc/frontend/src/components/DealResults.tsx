@@ -469,7 +469,7 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
                 </Box>
 
                 <Box>
-                  <ChakraText fontWeight="semibold" mb={2">Areas Requiring Attention:</ChakraText>
+                  <ChakraText fontWeight="semibold" mb={2}>Areas Requiring Attention:</ChakraText>
                   <VStack align="start" spacing={1}>
                     {financialMetrics.goingInCapRate < 5 && (
                       <ChakraText fontSize="sm" color="red.600">⚠ Low cap rate may indicate overpriced property or premium location</ChakraText>
