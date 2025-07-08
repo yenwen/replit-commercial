@@ -6,7 +6,7 @@ import SensitivityPanel from './SensitivityPanel'
 
 interface DealResultsProps {
   analysis: DealAnalysis | null
-  onReanalyze?: (input: DealInput) => void
+  onReanalyze?: (DealInput) => void
 }
 
 export default function DealResults({ analysis, onReanalyze }: DealResultsProps) {
@@ -36,7 +36,7 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
   const gradeMetric = (metricType: string, value: number, numberOfUnits: number = 1) => {
     let grade = 'C'
     let color = 'yellow'
-    
+
     switch (metricType) {
       case 'cap_rate':
         if (value >= 8.0) { grade = 'A+'; color = 'green' }
@@ -74,7 +74,7 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
         else { grade = 'D'; color = 'red' }
         break
     }
-    
+
     return { grade, color }
   }
 
@@ -230,7 +230,7 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
         {/* AI Analysis */}
         <Box>
           <Heading size="md" mb={4}>AI Investment Analysis</Heading>
-          
+
           <Box mb={4}>
             <Text fontWeight="semibold" mb={2}>Summary</Text>
             <Text color="gray.700">{aiAnalysis.summary}</Text>

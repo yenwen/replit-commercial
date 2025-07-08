@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -26,13 +25,21 @@ interface SensitivityPanelProps {
   onAnalysisUpdate: (input: DealInput) => void
 }
 
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0
+  }).format(value)
+}
+
 export default function SensitivityPanel({
   originalDealInput,
   originalMetrics,
   onAnalysisUpdate
 }: SensitivityPanelProps) {
   const { isOpen, onToggle } = useDisclosure()
-  
+
   // Sensitivity adjustments (as percentages)
   const [adjustments, setAdjustments] = useState({
     purchasePrice: 0,
@@ -48,19 +55,19 @@ export default function SensitivityPanel({
 
   useEffect(() => {
     const adjusted = { ...originalDealInput }
-    
+
     // Adjust purchase price
     adjusted.purchasePrice = originalDealInput.purchasePrice * (1 + adjustments.purchasePrice / 100)
-    
+
     // Adjust rent roll
     adjusted.rentRoll = originalDealInput.rentRoll.map(unit => ({
       ...unit,
       monthlyRent: unit.monthlyRent * (1 + adjustments.monthlyRent / 100)
     }))
-    
+
     // Adjust vacancy rate
     adjusted.vacancyRate = Math.max(0, Math.min(50, originalDealInput.vacancyRate + adjustments.vacancyRate))
-    
+
     // Adjust operating expenses
     const expenseMultiplier = (1 + adjustments.operatingExpenses / 100)
     adjusted.operatingExpenses = {
@@ -73,19 +80,19 @@ export default function SensitivityPanel({
       other: originalDealInput.operatingExpenses.other * expenseMultiplier,
       total: originalDealInput.operatingExpenses.total * expenseMultiplier
     }
-    
+
     // Adjust interest rate
     adjusted.loanTerms = {
       ...originalDealInput.loanTerms,
       interestRate: Math.max(1, Math.min(15, originalDealInput.loanTerms.interestRate + adjustments.interestRate))
     }
-    
+
     // Adjust exit cap rate
     adjusted.exitAssumptions = {
       ...originalDealInput.exitAssumptions,
       exitCapRate: Math.max(3, Math.min(12, originalDealInput.exitAssumptions.exitCapRate + adjustments.exitCapRate))
     }
-    
+
     setAdjustedInput(adjusted)
   }, [adjustments, originalDealInput])
 
@@ -111,7 +118,7 @@ export default function SensitivityPanel({
   const gradeMetric = (metricType: string, value: number) => {
     let grade = 'C'
     let color = 'yellow'
-    
+
     switch (metricType) {
       case 'cap_rate':
         if (value >= 8.0) { grade = 'A+'; color = 'green' }
@@ -135,7 +142,7 @@ export default function SensitivityPanel({
         else { grade = 'D'; color = 'red' }
         break
     }
-    
+
     return { grade, color }
   }
 
@@ -146,7 +153,7 @@ export default function SensitivityPanel({
     const totalExpenses = input.operatingExpenses.total
     const noi = effectiveGrossIncome - totalExpenses
     const goingInCapRate = (noi / input.purchasePrice) * 100
-    
+
     // Simplified cash-on-cash (assuming 25% down, 5.5% rate if not adjusted)
     const downPayment = input.purchasePrice * 0.25
     const loanAmount = input.purchasePrice * 0.75
@@ -154,14 +161,25 @@ export default function SensitivityPanel({
     const annualDebtService = monthlyPayment * 12
     const cashFlow = noi - annualDebtService
     const cashOnCash = (cashFlow / downPayment) * 100
-    
+
     // Simplified IRR estimate
     const simpleIRR = cashOnCash + 2 // Rough approximation
-    
+
     return { goingInCapRate, cashOnCash, irr: simpleIRR }
   }
 
   const previewMetrics = calculateQuickMetrics(adjustedInput)
+
+  const updateAdjustment = (key: string, value: number) => {
+    setAdjustments(prev => ({
+      ...prev,
+      [key]: value
+    }))
+  }
+
+  const handleReanalyze = () => {
+    onAnalysisUpdate(adjustedInput)
+  }
 
   return (
     <Box bg="blue.50" p={6} borderRadius="lg" border="2px solid" borderColor="blue.200">
@@ -191,7 +209,7 @@ export default function SensitivityPanel({
               </Badge>
             </HStack>
           </Box>
-          
+
           <Box textAlign="center" p={3} bg="white" borderRadius="md">
             <Text fontSize="sm" fontWeight="semibold">Cash-on-Cash</Text>
             <HStack justify="center" spacing={2}>
@@ -203,7 +221,7 @@ export default function SensitivityPanel({
               </Badge>
             </HStack>
           </Box>
-          
+
           <Box textAlign="center" p={3} bg="white" borderRadius="md">
             <Text fontSize="sm" fontWeight="semibold">Est. IRR</Text>
             <HStack justify="center" spacing={2}>
@@ -217,179 +235,178 @@ export default function SensitivityPanel({
           </Box>
         </SimpleGrid>
 
-        <Collapse in={isOpen}>
-          <VStack spacing={6} align="stretch">
-            {/* Purchase Price Adjustment */}
-            <Box>
-              <HStack justify="space-between" mb={2}>
-                <Text fontWeight="semibold">Purchase Price</Text>
-                <Text fontSize="sm" color="gray.600">
-                  {adjustments.purchasePrice > 0 ? '+' : ''}{adjustments.purchasePrice.toFixed(1)}%
+        <Collapse in={isOpen} animateOpacity>
+          <VStack spacing={6} align="stretch" mt={4}>
+            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+              {/* Purchase Price Adjustment */}
+              <Box>
+                <Text fontWeight="semibold" mb={2}>Purchase Price</Text>
+                <Text fontSize="sm" color="gray.600" mb={3}>
+                  Current: {formatCurrency(originalDealInput.purchasePrice)}
                 </Text>
-              </HStack>
-              <Slider
-                value={adjustments.purchasePrice}
-                onChange={(value) => handleAdjustment('purchasePrice', value)}
-                min={-20}
-                max={20}
-                step={0.5}
+                <Slider
+                  value={adjustments.purchasePrice}
+                  onChange={(value) => updateAdjustment('purchasePrice', value)}
+                  min={-20}
+                  max={20}
+                  step={1}
+                  colorScheme="blue"
+                >
+                  <SliderTrack>
+                    <SliderFilledTrack />
+                  </SliderTrack>
+                  <SliderThumb boxSize={4} />
+                </Slider>
+                <HStack justify="space-between" mt={1}>
+                  <Text fontSize="xs">-20%</Text>
+                  <Text fontSize="sm" fontWeight="bold">
+                    {adjustments.purchasePrice > 0 ? '+' : ''}{adjustments.purchasePrice}%
+                  </Text>
+                  <Text fontSize="xs">+20%</Text>
+                </HStack>
+                <Text fontSize="sm" color="gray.600" mt={1}>
+                  Adjusted: {formatCurrency(adjustedInput.purchasePrice)}
+                </Text>
+              </Box>
+              {/* Monthly Rent Adjustment */}
+              <Box>
+                <Text fontWeight="semibold" mb={2}>Monthly Rent</Text>
+                <Text fontSize="sm" color="gray.600" mb={3}>
+                  Current: {formatCurrency(originalDealInput.rentRoll.reduce((sum, unit) => sum + unit.monthlyRent, 0))}
+                </Text>
+                <Slider
+                  value={adjustments.monthlyRent}
+                  onChange={(value) => updateAdjustment('monthlyRent', value)}
+                  min={-20}
+                  max={20}
+                  step={1}
+                  colorScheme="green"
+                >
+                  <SliderTrack>
+                    <SliderFilledTrack />
+                  </SliderTrack>
+                  <SliderThumb boxSize={4} />
+                </Slider>
+                <HStack justify="space-between" mt={1}>
+                  <Text fontSize="xs">-20%</Text>
+                  <Text fontSize="sm" fontWeight="bold">
+                    {adjustments.monthlyRent > 0 ? '+' : ''}{adjustments.monthlyRent}%
+                  </Text>
+                  <Text fontSize="xs">+20%</Text>
+                </HStack>
+                <Text fontSize="sm" color="gray.600" mt={1}>
+                  Adjusted: {formatCurrency(adjustedInput.rentRoll.reduce((sum, unit) => sum + unit.monthlyRent, 0))}
+                </Text>
+              </Box>
+
+              {/* Operating Expenses */}
+              <Box>
+                <Text fontWeight="semibold" mb={2}>Operating Expenses</Text>
+                <Text fontSize="sm" color="gray.600" mb={3}>
+                  Current: {formatCurrency(originalDealInput.operatingExpenses || 0)}
+                </Text>
+                <Slider
+                  value={adjustments.operatingExpenses}
+                  onChange={(value) => updateAdjustment('operatingExpenses', value)}
+                  min={-20}
+                  max={20}
+                  step={1}
+                  colorScheme="red"
+                >
+                  <SliderTrack>
+                    <SliderFilledTrack />
+                  </SliderTrack>
+                  <SliderThumb boxSize={4} />
+                </Slider>
+                <HStack justify="space-between" mt={1}>
+                  <Text fontSize="xs">-20%</Text>
+                  <Text fontSize="sm" fontWeight="bold">
+                    {adjustments.operatingExpenses > 0 ? '+' : ''}{adjustments.operatingExpenses}%
+                  </Text>
+                  <Text fontSize="xs">+20%</Text>
+                </HStack>
+                <Text fontSize="sm" color="gray.600" mt={1}>
+                  Adjusted: {formatCurrency((originalDealInput.operatingExpenses || 0) * (1 + adjustments.operatingExpenses / 100))}
+                </Text>
+              </Box>
+
+              {/* Interest Rate */}
+              <Box>
+                <Text fontWeight="semibold" mb={2}>Interest Rate</Text>
+                <Text fontSize="sm" color="gray.600" mb={3}>
+                  Current: {(originalDealInput.interestRate || 0).toFixed(2)}%
+                </Text>
+                <Slider
+                  value={adjustments.interestRate}
+                  onChange={(value) => updateAdjustment('interestRate', value)}
+                  min={-2}
+                  max={3}
+                  step={0.25}
+                  colorScheme="orange"
+                >
+                  <SliderTrack>
+                    <SliderFilledTrack />
+                  </SliderTrack>
+                  <SliderThumb boxSize={4} />
+                </Slider>
+                <HStack justify="space-between" mt={1}>
+                  <Text fontSize="xs">-2%</Text>
+                  <Text fontSize="sm" fontWeight="bold">
+                    {adjustments.interestRate > 0 ? '+' : ''}{adjustments.interestRate.toFixed(2)}%
+                  </Text>
+                  <Text fontSize="xs">+3%</Text>
+                </HStack>
+                <Text fontSize="sm" color="gray.600" mt={1}>
+                  Adjusted: {((originalDealInput.interestRate || 0) + adjustments.interestRate).toFixed(2)}%
+                </Text>
+              </Box>
+
+              {/* Exit Cap Rate */}
+              <Box>
+                <Text fontWeight="semibold" mb={2}>Exit Cap Rate</Text>
+                <Text fontSize="sm" color="gray.600" mb={3}>
+                  Current: {(originalDealInput.exitCapRate || 0).toFixed(2)}%
+                </Text>
+                <Slider
+                  value={adjustments.exitCapRate}
+                  onChange={(value) => updateAdjustment('exitCapRate', value)}
+                  min={-2}
+                  max={3}
+                  step={0.25}
+                  colorScheme="purple"
+                >
+                  <SliderTrack>
+                    <SliderFilledTrack />
+                  </SliderTrack>
+                  <SliderThumb boxSize={4} />
+                </Slider>
+                <HStack justify="space-between" mt={1}>
+                  <Text fontSize="xs">-2%</Text>
+                  <Text fontSize="sm" fontWeight="bold">
+                    {adjustments.exitCapRate > 0 ? '+' : ''}{adjustments.exitCapRate.toFixed(2)}%
+                  </Text>
+                  <Text fontSize="xs">+3%</Text>
+                </HStack>
+                <Text fontSize="sm" color="gray.600" mt={1}>
+                  Adjusted: {((originalDealInput.exitCapRate || 0) + adjustments.exitCapRate).toFixed(2)}%
+                </Text>
+              </Box>
+            </SimpleGrid>
+
+            {/* Reanalyze Button */}
+            <Box textAlign="center" mt={6}>
+              <Button
                 colorScheme="blue"
+                size="lg"
+                onClick={handleReanalyze}
+                disabled={Object.values(adjustments).every(val => val === 0)}
               >
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-                <SliderThumb />
-              </Slider>
-              <HStack justify="space-between" fontSize="xs" color="gray.500" mt={1}>
-                <Text>-20%</Text>
-                <Text>+20%</Text>
-              </HStack>
-            </Box>
-
-            {/* Monthly Rent Adjustment */}
-            <Box>
-              <HStack justify="space-between" mb={2}>
-                <Text fontWeight="semibold">Monthly Rent</Text>
-                <Text fontSize="sm" color="gray.600">
-                  {adjustments.monthlyRent > 0 ? '+' : ''}{adjustments.monthlyRent.toFixed(1)}%
-                </Text>
-              </HStack>
-              <Slider
-                value={adjustments.monthlyRent}
-                onChange={(value) => handleAdjustment('monthlyRent', value)}
-                min={-15}
-                max={25}
-                step={0.5}
-                colorScheme="green"
-              >
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-                <SliderThumb />
-              </Slider>
-              <HStack justify="space-between" fontSize="xs" color="gray.500" mt={1}>
-                <Text>-15%</Text>
-                <Text>+25%</Text>
-              </HStack>
-            </Box>
-
-            {/* Vacancy Rate Adjustment */}
-            <Box>
-              <HStack justify="space-between" mb={2}>
-                <Text fontWeight="semibold">Vacancy Rate</Text>
-                <Text fontSize="sm" color="gray.600">
-                  {adjustments.vacancyRate > 0 ? '+' : ''}{adjustments.vacancyRate.toFixed(1)}%
-                </Text>
-              </HStack>
-              <Slider
-                value={adjustments.vacancyRate}
-                onChange={(value) => handleAdjustment('vacancyRate', value)}
-                min={-5}
-                max={15}
-                step={0.5}
-                colorScheme="red"
-              >
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-                <SliderThumb />
-              </Slider>
-              <HStack justify="space-between" fontSize="xs" color="gray.500" mt={1}>
-                <Text>-5%</Text>
-                <Text>+15%</Text>
-              </HStack>
-            </Box>
-
-            {/* Operating Expenses Adjustment */}
-            <Box>
-              <HStack justify="space-between" mb={2}>
-                <Text fontWeight="semibold">Operating Expenses</Text>
-                <Text fontSize="sm" color="gray.600">
-                  {adjustments.operatingExpenses > 0 ? '+' : ''}{adjustments.operatingExpenses.toFixed(1)}%
-                </Text>
-              </HStack>
-              <Slider
-                value={adjustments.operatingExpenses}
-                onChange={(value) => handleAdjustment('operatingExpenses', value)}
-                min={-20}
-                max={30}
-                step={1}
-                colorScheme="orange"
-              >
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-                <SliderThumb />
-              </Slider>
-              <HStack justify="space-between" fontSize="xs" color="gray.500" mt={1}>
-                <Text>-20%</Text>
-                <Text>+30%</Text>
-              </HStack>
-            </Box>
-
-            {/* Interest Rate Adjustment */}
-            <Box>
-              <HStack justify="space-between" mb={2}>
-                <Text fontWeight="semibold">Interest Rate</Text>
-                <Text fontSize="sm" color="gray.600">
-                  {adjustments.interestRate > 0 ? '+' : ''}{adjustments.interestRate.toFixed(1)}%
-                </Text>
-              </HStack>
-              <Slider
-                value={adjustments.interestRate}
-                onChange={(value) => handleAdjustment('interestRate', value)}
-                min={-2}
-                max={3}
-                step={0.1}
-                colorScheme="purple"
-              >
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-                <SliderThumb />
-              </Slider>
-              <HStack justify="space-between" fontSize="xs" color="gray.500" mt={1}>
-                <Text>-2%</Text>
-                <Text>+3%</Text>
-              </HStack>
-            </Box>
-
-            {/* Exit Cap Rate Adjustment */}
-            <Box>
-              <HStack justify="space-between" mb={2}>
-                <Text fontWeight="semibold">Exit Cap Rate</Text>
-                <Text fontSize="sm" color="gray.600">
-                  {adjustments.exitCapRate > 0 ? '+' : ''}{adjustments.exitCapRate.toFixed(1)}%
-                </Text>
-              </HStack>
-              <Slider
-                value={adjustments.exitCapRate}
-                onChange={(value) => handleAdjustment('exitCapRate', value)}
-                min={-1.5}
-                max={2}
-                step={0.1}
-                colorScheme="teal"
-              >
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-                <SliderThumb />
-              </Slider>
-              <HStack justify="space-between" fontSize="xs" color="gray.500" mt={1}>
-                <Text>-1.5%</Text>
-                <Text>+2%</Text>
-              </HStack>
-            </Box>
-
-            {/* Action Buttons */}
-            <HStack spacing={4} justify="center" pt={4}>
-              <Button onClick={resetAdjustments} variant="outline">
-                Reset All
+                Reanalyze with Adjustments
               </Button>
-              <Button onClick={applyAdjustments} colorScheme="blue">
-                Apply Changes & Re-analyze
-              </Button>
-            </HStack>
+              <Text fontSize="sm" color="gray.500" mt={2}>
+                Click to see how your adjustments affect the deal grades
+              </Text>
+            </Box>
           </VStack>
         </Collapse>
       </VStack>
