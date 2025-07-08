@@ -1,8 +1,7 @@
-
 'use client'
 
 import { Box, Container, Heading, Text, VStack, HStack, Badge, Flex, Icon, Button, useColorModeValue } from '@chakra-ui/react'
-import { FiTrendingUp, FiCalculator, FiTarget } from 'react-icons/fi'
+import { FiTrendingUp, FiTarget } from 'react-icons/fi'
 import DealAnalyzer from '@/components/DealAnalyzer'
 
 export default function Home() {
@@ -28,7 +27,7 @@ export default function Home() {
             >
               Professional Real Estate Analysis
             </Badge>
-            
+
             <Heading 
               size={{ base: 'xl', md: '2xl' }} 
               fontWeight="bold"
@@ -37,7 +36,7 @@ export default function Home() {
             >
               Commercial Real Estate Investment Calculator
             </Heading>
-            
+
             <Text 
               fontSize={{ base: 'lg', md: 'xl' }} 
               color="whiteAlpha.900"
@@ -56,7 +55,7 @@ export default function Home() {
               pt={4}
             >
               <HStack spacing={2}>
-                <Icon as={FiCalculator} boxSize={5} />
+                <Icon as={FiTrendingUp} boxSize={5} />
                 <Text fontSize="sm" fontWeight="medium">Comprehensive Analysis</Text>
               </HStack>
               <HStack spacing={2}>

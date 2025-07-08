@@ -1,4 +1,3 @@
-
 'use client'
 
 import {
@@ -112,7 +111,7 @@ export default function PropertyDetailsStep({
                   </Tooltip>
                 </Flex>
                 <NumberInput
-                  value={data.numberOfUnits || ''}
+                  value={data.numberOfUnits?.toString() || ''}
                   onChange={(_, value) => handleChange('numberOfUnits', value || 0)}
                   min={1}
                   max={1000}
@@ -188,7 +187,7 @@ export default function PropertyDetailsStep({
                   </Tooltip>
                 </Flex>
                 <NumberInput
-                  value={data.vacancyRate || ''}
+                  value={data.vacancyRate?.toString() || ''}
                   onChange={(_, value) => handleChange('vacancyRate', value || 0)}
                   min={0}
                   max={50}
