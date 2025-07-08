@@ -61,14 +61,27 @@ export interface FinancialMetrics {
   breakEvenOccupancy: number
   dscr: number
   exitSalePrice: number
-  totalCashFlow: number[]
-  equityReturn: number[]
+  totalReturn: number
+  annualCashFlow: number
+  exitValue: number
 }
 
 export interface SensitivityTable {
   exitCapRates: number[]
   salePrices: number[]
   irrs: number[]
+}
+
+export interface AIAnalysis {
+  summary: string
+  redFlags: string[]
+  recommendations: string[]
+}
+
+export interface DealAnalysis {
+  dealInput: DealInput
+  financialMetrics: FinancialMetrics
+  aiAnalysis: AIAnalysis
 }
 
 export interface AIAnalysis {
