@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, VStack, HStack, Heading, Text, SimpleGrid, Stat, StatLabel, StatNumber, StatHelpText, Alert, AlertIcon, Button, Table, Thead, Tbody, Tr, Th, Td, Card, CardBody } from '@chakra-ui/react'
+import { Box, VStack, HStack, Heading, Text as ChakraText, SimpleGrid, Stat, StatLabel, StatNumber, StatHelpText, Alert, AlertIcon, Button, Table, Thead, Tbody, Tr, Th, Td, Card, CardBody } from '@chakra-ui/react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts'
 import { DealAnalysis, DealInput } from '@/types'
 import SensitivityPanel from './SensitivityPanel'
@@ -88,9 +88,9 @@ const SensitivityTable = ({ baseCapRate, baseIRR, baseCashOnCash }: {
 
   return (
     <Box overflowX="auto">
-      <Text fontSize="sm" color="gray.600" mb={3}>
+      <ChakraText fontSize="sm" color="gray.600" mb={3}>
         IRR Sensitivity to Rent and Purchase Price Changes (%)
-      </Text>
+      </ChakraText>
       <Table size="sm" variant="simple">
         <Thead>
           <Tr>
@@ -108,12 +108,12 @@ const SensitivityTable = ({ baseCapRate, baseIRR, baseCashOnCash }: {
                 const irr = calculateIRRSensitivity(rent, price)
                 return (
                   <Td key={`${price}-${rent}`} textAlign="center">
-                    <Text 
+                    <ChakraText 
                       color={getColorForIRR(irr)}
                       fontWeight={rent === 0 && price === 0 ? 'bold' : 'normal'}
                     >
                       {irr.toFixed(1)}%
-                    </Text>
+                    </ChakraText>
                   </Td>
                 )
               })}
@@ -134,7 +134,7 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
   if (!analysis) {
     return (
       <Box textAlign="center" py={8}>
-        <Text>No analysis data available</Text>
+        <ChakraText>No analysis data available</ChakraText>
       </Box>
     )
   }
@@ -212,16 +212,16 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
           <Heading size="sm" mb={3} color="blue.700">Metric Grading System</Heading>
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
             <VStack align="start" spacing={1}>
-              <Text fontWeight="semibold" fontSize="sm">Excellent (A+/A)</Text>
-              <Text fontSize="xs" color="gray.600">Top-tier investment metrics indicating strong value and returns</Text>
+              <ChakraText fontWeight="semibold" fontSize="sm">Excellent (A+/A)</ChakraText>
+              <ChakraText fontSize="xs" color="gray.600">Top-tier investment metrics indicating strong value and returns</ChakraText>
             </VStack>
             <VStack align="start" spacing={1}>
-              <Text fontWeight="semibold" fontSize="sm">Good (B)</Text>
-              <Text fontSize="xs" color="gray.600">Solid metrics meeting most investor requirements</Text>
+              <ChakraText fontWeight="semibold" fontSize="sm">Good (B)</ChakraText>
+              <ChakraText fontSize="xs" color="gray.600">Solid metrics meeting most investor requirements</ChakraText>
             </VStack>
             <VStack align="start" spacing={1}>
-              <Text fontWeight="semibold" fontSize="sm">Needs Review (C/D)</Text>
-              <Text fontSize="xs" color="gray.600">Below-market performance requiring further analysis</Text>
+              <ChakraText fontWeight="semibold" fontSize="sm">Needs Review (C/D)</ChakraText>
+              <ChakraText fontSize="xs" color="gray.600">Below-market performance requiring further analysis</ChakraText>
             </VStack>
           </SimpleGrid>
         </Box>
@@ -320,23 +320,23 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
           <Heading size="md" mb={4} textAlign="center">Overall Investment Grade</Heading>
           <VStack spacing={4}>
             <Box textAlign="center">
-              <Text fontSize="4xl" fontWeight="bold" 
+              <ChakraText fontSize="4xl" fontWeight="bold" 
                     color={aiAnalysis.summary.includes("STRONG BUY") ? "green.500" : 
                           aiAnalysis.summary.includes("BUY") ? "blue.500" : 
                           aiAnalysis.summary.includes("HOLD") ? "yellow.500" : "red.500"}>
                 {aiAnalysis.summary.split("OVERALL GRADE: ")[1]?.split(" - ")[0] || "N/A"}
-              </Text>
-              <Text fontSize="xl" fontWeight="semibold" mt={2}
+              </ChakraText>
+              <ChakraText fontSize="xl" fontWeight="semibold" mt={2}
                     color={aiAnalysis.summary.includes("STRONG BUY") ? "green.600" : 
                           aiAnalysis.summary.includes("BUY") ? "blue.600" : 
                           aiAnalysis.summary.includes("HOLD") ? "yellow.600" : "red.600"}>
                 {aiAnalysis.summary.split(" - ")[1]?.split(".")[0] || "N/A"}
-              </Text>
+              </ChakraText>
             </Box>
             <Box textAlign="center" maxW="600px">
-              <Text color="gray.700" fontSize="lg">
+              <ChakraText color="gray.700" fontSize="lg">
                 {aiAnalysis.summary.split(". ")[1]?.split(" Analysis:")[0] || "Investment analysis not available"}
-              </Text>
+              </ChakraText>
             </Box>
           </VStack>
         </Box>
@@ -355,13 +355,13 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
           <Heading size="md" mb={4}>AI Investment Analysis</Heading>
 
           <Box mb={4}>
-            <Text fontWeight="semibold" mb={2}>Summary</Text>
-            <Text color="gray.700">{aiAnalysis.summary}</Text>
+            <ChakraText fontWeight="semibold" mb={2}>Summary</ChakraText>
+            <ChakraText color="gray.700">{aiAnalysis.summary}</ChakraText>
           </Box>
 
           {aiAnalysis.redFlags.length > 0 && (
             <Box mb={4}>
-              <Text fontWeight="semibold" mb={2} color="red.600">Red Flags</Text>
+              <ChakraText fontWeight="semibold" mb={2} color="red.600">Red Flags</ChakraText>
               <VStack align="stretch" spacing={2}>
                 {aiAnalysis.redFlags.map((flag, index) => (
                   <Alert key={index} status="warning" variant="left-accent">
@@ -375,7 +375,7 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
 
           {aiAnalysis.recommendations.length > 0 && (
             <Box>
-              <Text fontWeight="semibold" mb={2} color="green.600">Recommendations</Text>
+              <ChakraText fontWeight="semibold" mb={2} color="green.600">Recommendations</ChakraText>
               <VStack align="stretch" spacing={2}>
                 {aiAnalysis.recommendations.map((rec, index) => (
                   <Alert key={index} status="info" variant="left-accent">

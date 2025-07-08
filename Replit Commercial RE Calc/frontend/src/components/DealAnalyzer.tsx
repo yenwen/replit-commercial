@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Box, VStack, useSteps, Step, StepIcon, StepIndicator, StepNumber, StepSeparator, StepStatus, StepTitle, Stepper } from '@chakra-ui/react'
+import { Box, VStack, useSteps, Step, StepIcon, StepIndicator, StepNumber, StepSeparator, StepStatus, StepTitle, Stepper, Text as ChakraText } from '@chakra-ui/react'
 import DealInputForm from './DealInputForm'
 import DealResults from './DealResults'
 import { DealInput, DealAnalysis } from '@/types'
@@ -148,12 +148,12 @@ export default function DealAnalyzer() {
               animation="spin 1s linear infinite"
             />
             <VStack spacing={2} textAlign="center">
-              <Text fontSize="lg" fontWeight="600" color="gray.800">
+              <ChakraText fontSize="lg" fontWeight="600" color="gray.800">
                 Analyzing Your Deal
-              </Text>
-              <Text fontSize="sm" color="gray.600" maxW="xs">
+              </ChakraText>
+              <ChakraText fontSize="sm" color="gray.600" maxW="xs">
                 Our AI is crunching the numbers and generating your investment analysis...
-              </Text>
+              </ChakraText>
             </VStack>
           </VStack>
         </Box>
