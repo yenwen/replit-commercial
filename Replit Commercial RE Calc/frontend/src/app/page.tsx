@@ -1,3 +1,4 @@
+
 'use client'
 
 import { Box, Container, Heading, Text, VStack, HStack, Badge } from '@chakra-ui/react'
@@ -44,4 +45,3 @@ export default function Home() {
     </Box>
   )
 }
-```
