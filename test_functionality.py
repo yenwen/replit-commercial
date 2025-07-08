@@ -26,51 +26,57 @@ def test_backend_health():
 def test_analyze_endpoint():
     """Test the deal analysis endpoint with sample data"""
     sample_deal = {
-        "property_details": {
-            "address": "123 Test St, Test City, TC 12345",
-            "property_type": "office",
-            "total_square_feet": 10000,
-            "year_built": 2010,
-            "purchase_price": 1000000,
-            "closing_costs": 25000
-        },
-        "rent_roll": {
-            "units": [
-                {
-                    "unit_number": "Suite 100",
-                    "tenant_name": "Test Tenant",
-                    "square_feet": 5000,
-                    "monthly_rent": 5000,
-                    "lease_start": "2024-01-01",
-                    "lease_end": "2026-12-31",
-                    "security_deposit": 10000
-                }
-            ]
-        },
-        "operating_expenses": {
-            "property_taxes": 15000,
+        "propertyType": "office",
+        "purchasePrice": 1000000,
+        "numberOfUnits": 2,
+        "rentRoll": [
+            {
+                "unitNumber": "Suite 100",
+                "unitType": "office",
+                "bedrooms": 0,
+                "bathrooms": 1,
+                "squareFootage": 5000,
+                "monthlyRent": 5000,
+                "occupied": True
+            },
+            {
+                "unitNumber": "Suite 200", 
+                "unitType": "office",
+                "bedrooms": 0,
+                "bathrooms": 1,
+                "squareFootage": 3000,
+                "monthlyRent": 3000,
+                "occupied": True
+            }
+        ],
+        "vacancyRate": 5.0,
+        "operatingExpenses": {
+            "propertyTax": 15000,
             "insurance": 8000,
             "utilities": 12000,
             "maintenance": 10000,
-            "management": 18000,
+            "propertyManagement": 18000,
             "other": 5000
         },
-        "financing": {
-            "loan_amount": 750000,
-            "interest_rate": 5.5,
-            "loan_term_years": 25,
-            "points": 1.0
+        "capexBudget": 25000,
+        "loanTerms": {
+            "ltv": 75.0,
+            "interestRate": 5.5,
+            "amortizationPeriod": 30,
+            "isInterestOnly": False,
+            "interestOnlyMonths": 0
         },
-        "exit_strategy": {
-            "hold_period_years": 5,
-            "exit_cap_rate": 7.0,
-            "selling_costs_percentage": 3.0
+        "exitAssumptions": {
+            "holdPeriod": 5.0,
+            "exitCapRate": 7.0,
+            "annualAppreciation": 3.0,
+            "marketCapRate": 6.0
         }
     }
     
     try:
         response = requests.post(
-            "http://localhost:5000/api/analyze",
+            "http://localhost:5000/api/analyze-deal",
             json=sample_deal,
             headers={"Content-Type": "application/json"},
             timeout=10
