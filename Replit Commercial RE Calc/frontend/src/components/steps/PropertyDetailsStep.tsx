@@ -42,9 +42,9 @@ export default function PropertyDetailsStep({
       <VStack spacing={8} align="stretch">
         <Box>
           <Heading size="lg" mb={2} color="gray.800">Property Details</Heading>
-          <Text color="gray.600" fontSize="lg">
+          <ChakraText color="gray.600" fontSize="lg">
             Let's start with the basics about your investment property
-          </Text>
+          </ChakraText>
         </Box>
 
         <Card>

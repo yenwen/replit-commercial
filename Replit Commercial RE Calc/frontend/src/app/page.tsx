@@ -1,7 +1,7 @@
 
 'use client'
 
-import { Box, Container, Heading, Text, VStack, HStack, Badge } from '@chakra-ui/react'
+import { Box, Container, Heading, Text as ChakraText, VStack, HStack, Badge } from '@chakra-ui/react'
 import DealAnalyzer from '@/components/DealAnalyzer'
 
 export default function Home() {
@@ -17,21 +17,21 @@ export default function Home() {
             <Heading as="h1" size="2xl" color="gray.800" fontWeight="700">
               Commercial Real Estate Calculator
             </Heading>
-            <Text fontSize="xl" color="gray.600" maxW="2xl">
+            <ChakraText fontSize="xl" color="gray.600" maxW="2xl">
               Professional-grade investment analysis for multifamily and commercial properties. 
               Get instant grades, recommendations, and detailed financial projections.
-            </Text>
+            </ChakraText>
 
             {/* Feature highlights */}
             <HStack spacing={8} mt={6} flexWrap="wrap" justify="center">
               <HStack spacing={2} color="gray.600">
-                <Text fontSize="sm" fontWeight="600">📈 IRR & Cash Flow Analysis</Text>
+                <ChakraText fontSize="sm" fontWeight="600">📈 IRR & Cash Flow Analysis</ChakraText>
               </HStack>
               <HStack spacing={2} color="gray.600">
-                <Text fontSize="sm" fontWeight="600">💰 Investment Grading</Text>
+                <ChakraText fontSize="sm" fontWeight="600">💰 Investment Grading</ChakraText>
               </HStack>
               <HStack spacing={2} color="gray.600">
-                <Text fontSize="sm" fontWeight="600">📊 Sensitivity Analysis</Text>
+                <ChakraText fontSize="sm" fontWeight="600">📊 Sensitivity Analysis</ChakraText>
               </HStack>
             </HStack>
           </VStack>
