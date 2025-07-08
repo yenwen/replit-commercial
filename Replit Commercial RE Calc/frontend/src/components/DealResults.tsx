@@ -1,8 +1,129 @@
 'use client'
 
-import { Box, VStack, HStack, Heading, Text, SimpleGrid, Stat, StatLabel, StatNumber, StatHelpText, Alert, AlertIcon, Button } from '@chakra-ui/react'
+import { Box, VStack, HStack, Heading, Text, SimpleGrid, Stat, StatLabel, StatNumber, StatHelpText, Alert, AlertIcon, Button, Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts'
 import { DealAnalysis, DealInput } from '@/types'
 import SensitivityPanel from './SensitivityPanel'
+
+// Cash Flow Chart Component
+const CashFlowChart = ({ initialCashFlow, growth }: { initialCashFlow: number, growth: number }) => {
+  const data = Array.from({ length: 10 }, (_, i) => ({
+    year: i + 1,
+    cashFlow: initialCashFlow * Math.pow(1 + growth / 100, i),
+    cumulativeCashFlow: Array.from({ length: i + 1 }, (_, j) => 
+      initialCashFlow * Math.pow(1 + growth / 100, j)
+    ).reduce((sum, val) => sum + val, 0)
+  }))
+
+  return (
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="year" />
+        <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`} />
+        <Tooltip 
+          formatter={(value: number, name: string) => [
+            `$${value.toLocaleString()}`, 
+            name === 'cashFlow' ? 'Annual Cash Flow' : 'Cumulative Cash Flow'
+          ]}
+        />
+        <Line type="monotone" dataKey="cashFlow" stroke="#3182CE" strokeWidth={2} name="cashFlow" />
+        <Line type="monotone" dataKey="cumulativeCashFlow" stroke="#38A169" strokeWidth={2} name="cumulativeCashFlow" />
+      </LineChart>
+    </ResponsiveContainer>
+  )
+}
+
+// IRR Waterfall Component
+const IRRWaterfall = ({ cashOnCash, appreciation, totalIRR }: { 
+  cashOnCash: number, 
+  appreciation: number, 
+  totalIRR: number 
+}) => {
+  const data = [
+    { name: 'Cash-on-Cash Return', value: cashOnCash, color: '#3182CE' },
+    { name: 'Appreciation Return', value: appreciation, color: '#38A169' },
+    { name: 'Total IRR', value: totalIRR, color: '#805AD5' }
+  ]
+
+  return (
+    <ResponsiveContainer width="100%" height={250}>
+      <BarChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis tickFormatter={(value) => `${value.toFixed(1)}%`} />
+        <Tooltip formatter={(value: number) => [`${value.toFixed(2)}%`, 'Return']} />
+        <Bar dataKey="value">
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.color} />
+          ))}
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
+  )
+}
+
+// Sensitivity Table Component
+const SensitivityTable = ({ baseCapRate, baseIRR, baseCashOnCash }: {
+  baseCapRate: number,
+  baseIRR: number,
+  baseCashOnCash: number
+}) => {
+  const rentChanges = [-10, -5, 0, 5, 10]
+  const priceChanges = [-10, -5, 0, 5, 10]
+
+  const calculateIRRSensitivity = (rentChange: number, priceChange: number) => {
+    // Simplified sensitivity calculation
+    const rentImpact = (rentChange / 100) * 0.8 // 80% of rent change affects IRR
+    const priceImpact = -(priceChange / 100) * 0.6 // Price increase reduces IRR
+    return baseIRR + (rentImpact + priceImpact) * 100
+  }
+
+  const getColorForIRR = (irr: number) => {
+    if (irr >= 12) return 'green.500'
+    if (irr >= 8) return 'blue.500'
+    if (irr >= 6) return 'yellow.500'
+    return 'red.500'
+  }
+
+  return (
+    <Box overflowX="auto">
+      <Text fontSize="sm" color="gray.600" mb={3}>
+        IRR Sensitivity to Rent and Purchase Price Changes (%)
+      </Text>
+      <Table size="sm" variant="simple">
+        <Thead>
+          <Tr>
+            <Th>Rent Change →<br />Price Change ↓</Th>
+            {rentChanges.map(rent => (
+              <Th key={rent} textAlign="center">{rent > 0 ? '+' : ''}{rent}%</Th>
+            ))}
+          </Tr>
+        </Thead>
+        <Tbody>
+          {priceChanges.map(price => (
+            <Tr key={price}>
+              <Th>{price > 0 ? '+' : ''}{price}%</Th>
+              {rentChanges.map(rent => {
+                const irr = calculateIRRSensitivity(rent, price)
+                return (
+                  <Td key={`${price}-${rent}`} textAlign="center">
+                    <Text 
+                      color={getColorForIRR(irr)}
+                      fontWeight={rent === 0 && price === 0 ? 'bold' : 'normal'}
+                    >
+                      {irr.toFixed(1)}%
+                    </Text>
+                  </Td>
+                )
+              })}
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </Box>
+  )
+}
 
 interface DealResultsProps {
   analysis: DealAnalysis | null
@@ -265,15 +386,39 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
           )}
         </Box>
 
-        {/* Charts Placeholder */}
+        {/* Cash Flow Analysis */}
         <Box>
           <Heading size="md" mb={4}>Cash Flow Analysis</Heading>
-          <Box p={8} bg="gray.50" borderRadius="md" textAlign="center">
-            <Text color="gray.500">Charts will be implemented here</Text>
-            <Text fontSize="sm" color="gray.400" mt={2}>
-              Cash flow curves, IRR waterfall, and sensitivity tables
-            </Text>
-          </Box>
+          <VStack spacing={6} align="stretch">
+            {/* Annual Cash Flow Chart */}
+            <Box bg="white" p={6} borderRadius="lg" border="1px solid" borderColor="gray.200">
+              <Heading size="sm" mb={4}>10-Year Cash Flow Projection</Heading>
+              <CashFlowChart 
+                initialCashFlow={financialMetrics.annualCashFlow}
+                growth={3} // 3% annual growth assumption
+              />
+            </Box>
+
+            {/* IRR Waterfall */}
+            <Box bg="white" p={6} borderRadius="lg" border="1px solid" borderColor="gray.200">
+              <Heading size="sm" mb={4}>IRR Components Breakdown</Heading>
+              <IRRWaterfall 
+                cashOnCash={financialMetrics.cashOnCashReturn}
+                appreciation={financialMetrics.irr - financialMetrics.cashOnCashReturn}
+                totalIRR={financialMetrics.irr}
+              />
+            </Box>
+
+            {/* Sensitivity Table */}
+            <Box bg="white" p={6} borderRadius="lg" border="1px solid" borderColor="gray.200">
+              <Heading size="sm" mb={4}>Sensitivity Analysis Table</Heading>
+              <SensitivityTable 
+                baseCapRate={financialMetrics.goingInCapRate}
+                baseIRR={financialMetrics.irr}
+                baseCashOnCash={financialMetrics.cashOnCashReturn}
+              />
+            </Box>
+          </VStack>
         </Box>
 
         {/* Action Buttons */}
