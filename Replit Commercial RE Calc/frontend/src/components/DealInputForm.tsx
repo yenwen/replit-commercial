@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Box, Button, VStack, HStack, useToast } from '@chakra-ui/react'
+import { Box, VStack, HStack, Button, useToast, Text as ChakraText, Flex, Icon } from '@chakra-ui/react'
+import { FiArrowLeft, FiArrowRight, FiTrendingUp } from 'react-icons/fi'
 import PropertyDetailsStep from './steps/PropertyDetailsStep'
 import RentRollStep from './steps/RentRollStep'
 import ExpensesFinancingStep from './steps/ExpensesFinancingStep'
@@ -47,7 +48,7 @@ export default function DealInputForm({
   const handleStepData = (stepData: Partial<DealInput>) => {
     const updatedData = { ...formData, ...stepData }
     setFormData(updatedData)
-    
+
     // Save to localStorage
     try {
       localStorage.setItem('dealInputProgress', JSON.stringify(updatedData))
@@ -90,7 +91,7 @@ export default function DealInputForm({
     } else {
       // Complete the form
       console.log('Completing form with data:', formData)
-      
+
       // Ensure all required fields have default values
       const completeData: DealInput = {
         propertyType: formData.propertyType || 'multifamily',
@@ -121,7 +122,7 @@ export default function DealInputForm({
           marketCapRate: 6.0
         }
       }
-      
+
       console.log('Complete deal data:', completeData)
       onComplete(completeData)
     }
@@ -237,7 +238,7 @@ export default function DealInputForm({
             {currentStep === 3 ? 'Analyze Deal 🚀' : 'Continue →'}
           </Button>
         </HStack>
-        
+
         {/* Mobile clear progress button */}
         <Button
           onClick={handleClearProgress}
