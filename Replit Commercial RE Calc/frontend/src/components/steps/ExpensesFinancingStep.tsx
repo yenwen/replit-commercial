@@ -204,7 +204,7 @@ export default function ExpensesFinancingStep({
             <FormControl>
               <FormLabel>Other ($/year)</FormLabel>
               <NumberInput
-                value={operatingExpenses.other}
+                value={operatingExpenses.other?.toString() || ''}
                 onChange={(_, value) => handleExpenseChange('other', value)}
                 min={0}
                 precision={2}
@@ -227,7 +227,7 @@ export default function ExpensesFinancingStep({
               <FormControl>
                 <FormLabel>Loan-to-Value (%)</FormLabel>
                 <NumberInput
-                  value={loanTerms.ltv}
+                  value={loanTerms.ltv?.toString() || ''}
                   onChange={(_, value) => handleLoanChange('ltv', value)}
                   min={0}
                   max={100}
@@ -245,7 +245,7 @@ export default function ExpensesFinancingStep({
               <FormControl>
                 <FormLabel>Interest Rate (%)</FormLabel>
                 <NumberInput
-                  value={loanTerms.interestRate}
+                  value={loanTerms.interestRate?.toString() || ''}
                   onChange={(_, value) => handleLoanChange('interestRate', value)}
                   min={0}
                   max={20}
@@ -263,7 +263,7 @@ export default function ExpensesFinancingStep({
               <FormControl>
                 <FormLabel>Amortization Period (years)</FormLabel>
                 <NumberInput
-                  value={loanTerms.amortizationPeriod}
+                  value={loanTerms.amortizationPeriod?.toString() || ''}
                   onChange={(_, value) => handleLoanChange('amortizationPeriod', value)}
                   min={1}
                   max={50}
@@ -301,7 +301,7 @@ export default function ExpensesFinancingStep({
                   <FormControl>
                     <FormLabel>Interest-Only Months</FormLabel>
                     <NumberInput
-                      value={loanTerms.interestOnlyMonths}
+                      value={loanTerms.interestOnlyMonths?.toString() || ''}
                       onChange={(_, value) => handleLoanChange('interestOnlyMonths', value)}
                       min={1}
                       max={600}
@@ -323,7 +323,7 @@ export default function ExpensesFinancingStep({
         <FormControl>
           <FormLabel>CapEx Budget ($)</FormLabel>
           <NumberInput
-            value={capexBudget}
+            value={capexBudget?.toString() || ''}
             onChange={(_, value) => handleCapexChange(value)}
             min={0}
             precision={2}

@@ -207,7 +207,7 @@ export default function RentRollStep({
                   <FormControl flex="1">
                     <FormLabel fontSize="sm">Number of Units</FormLabel>
                     <NumberInput
-                      value={bulkData.count}
+                      value={bulkData.count?.toString() || ''}
                       onChange={(_, value) => setBulkData(prev => ({ ...prev, count: value || 1 }))}
                       min={1}
                       size="sm"
@@ -239,7 +239,7 @@ export default function RentRollStep({
                   <FormControl flex="1">
                     <FormLabel fontSize="sm">Bedrooms</FormLabel>
                     <NumberInput
-                      value={bulkData.bedrooms}
+                      value={bulkData.bedrooms?.toString() || ''}
                       onChange={(_, value) => setBulkData(prev => ({ ...prev, bedrooms: value || 0 }))}
                       min={0}
                       precision={1}
@@ -256,7 +256,7 @@ export default function RentRollStep({
                   <FormControl flex="1">
                     <FormLabel fontSize="sm">Bathrooms</FormLabel>
                     <NumberInput
-                      value={bulkData.bathrooms}
+                      value={bulkData.bathrooms?.toString() || ''}
                       onChange={(_, value) => setBulkData(prev => ({ ...prev, bathrooms: value || 0 }))}
                       min={0}
                       precision={1}
