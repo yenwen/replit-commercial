@@ -2,39 +2,24 @@
 
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 
-// Create a custom theme with brand colors
 const theme = extendTheme({
   colors: {
     brand: {
-      50: '#e3f2fd',
-      100: '#bbdefb',
-      200: '#90caf9',
-      300: '#64b5f6',
-      400: '#42a5f5',
-      500: '#2196f3',
-      600: '#1e88e5',
-      700: '#1976d2',
-      800: '#1565c0',
-      900: '#0d47a1',
+      50: '#e6f7ff',
+      100: '#bae7ff',
+      200: '#91d5ff',
+      300: '#69c0ff',
+      400: '#40a9ff',
+      500: '#1890ff',
+      600: '#096dd9',
+      700: '#0050b3',
+      800: '#003a8c',
+      900: '#002766',
     },
   },
-  styles: {
-    global: {
-      body: {
-        bg: 'gray.50',
-        color: 'gray.800',
-        overflowY: 'auto', // Enable vertical scrolling
-        height: '100vh',
-      },
-      html: {
-        height: '100%',
-        overflowY: 'auto', // Enable vertical scrolling
-      },
-      '#__next': {
-        height: '100%',
-        minHeight: '100vh',
-      }
-    },
+  config: {
+    initialColorMode: 'light',
+    useSystemColorMode: false,
   },
 })
 
@@ -45,8 +30,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body style={{ margin: 0, padding: 0, minHeight: '100vh', overflowY: 'auto' }}>
-        <ChakraProvider>
+      <body>
+        <ChakraProvider theme={theme}>
           {children}
         </ChakraProvider>
       </body>

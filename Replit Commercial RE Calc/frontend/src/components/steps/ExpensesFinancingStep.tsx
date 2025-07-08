@@ -286,7 +286,7 @@ export default function ExpensesFinancingStep({
                   value={loanTerms.isInterestOnly ? 'yes' : 'no'}
                   onChange={(e) => {
                     const isInterestOnly = e.target.value === 'yes'
-                    handleLoanChange('isInterestOnly', isInterestOnly ? 1 : 0)
+                    handleLoanChange('isInterestOnly', isInterestOnly)
                     if (!isInterestOnly) {
                       handleLoanChange('interestOnlyMonths', 0)
                     }

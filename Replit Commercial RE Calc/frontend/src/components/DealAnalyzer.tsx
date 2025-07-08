@@ -105,3 +105,164 @@ export default function DealAnalyzer() {
     </Box>
   )
 }
+'use client'
+
+import { useState } from 'react'
+import { Box, VStack, HStack, Heading, Progress, Text, useToast } from '@chakra-ui/react'
+import DealInputForm from './DealInputForm'
+import DealResults from './DealResults'
+import { DealInput, DealAnalysis } from '@/types'
+
+const steps = [
+  'Property Details',
+  'Rent Roll',
+  'Expenses & Financing',
+  'Exit Strategy'
+]
+
+export default function DealAnalyzer() {
+  const [currentStep, setCurrentStep] = useState(0)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [analysis, setAnalysis] = useState<DealAnalysis | null>(null)
+  const toast = useToast()
+
+  const handleStepChange = (step: number) => {
+    console.log('Step change requested from', currentStep, 'to', step)
+    setCurrentStep(step)
+  }
+
+  const handleComplete = async (dealInput: DealInput) => {
+    setIsAnalyzing(true)
+    
+    try {
+      const response = await fetch('/api/analyze-deal', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dealInput),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Analysis failed: ${response.statusText}`)
+      }
+
+      const result: DealAnalysis = await response.json()
+      setAnalysis(result)
+      
+      toast({
+        title: 'Analysis Complete',
+        description: 'Your deal analysis is ready!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
+
+      // Clear saved progress after successful analysis
+      localStorage.removeItem('dealInputProgress')
+      
+    } catch (error) {
+      console.error('Analysis error:', error)
+      toast({
+        title: 'Analysis Failed',
+        description: error instanceof Error ? error.message : 'Unknown error occurred',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
+    } finally {
+      setIsAnalyzing(false)
+    }
+  }
+
+  const handleStartOver = () => {
+    setCurrentStep(0)
+    setAnalysis(null)
+    localStorage.removeItem('dealInputProgress')
+    toast({
+      title: 'Reset Complete',
+      description: 'Starting a new analysis',
+      status: 'info',
+      duration: 2000,
+      isClosable: true,
+    })
+  }
+
+  if (analysis) {
+    return (
+      <Box>
+        <VStack spacing={6} align="stretch">
+          <HStack justify="space-between" align="center">
+            <Heading size="lg">Deal Analysis Results</Heading>
+            <button
+              onClick={handleStartOver}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#1890ff',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer'
+              }}
+            >
+              Start New Analysis
+            </button>
+          </HStack>
+          <DealResults analysis={analysis} />
+        </VStack>
+      </Box>
+    )
+  }
+
+  return (
+    <Box>
+      <VStack spacing={8} align="stretch">
+        {/* Progress Indicator */}
+        <Box>
+          <HStack justify="space-between" mb={2}>
+            <Text fontSize="sm" fontWeight="medium">
+              Step {currentStep + 1} of {steps.length}: {steps[currentStep]}
+            </Text>
+            <Text fontSize="sm" color="gray.500">
+              {Math.round(((currentStep + 1) / steps.length) * 100)}% Complete
+            </Text>
+          </HStack>
+          <Progress 
+            value={((currentStep + 1) / steps.length) * 100} 
+            colorScheme="brand"
+            size="sm"
+            borderRadius="full"
+          />
+        </Box>
+
+        {/* Step Navigation */}
+        <HStack spacing={4} justify="center">
+          {steps.map((step, index) => (
+            <Box
+              key={index}
+              px={3}
+              py={1}
+              borderRadius="full"
+              bg={index === currentStep ? 'brand.500' : index < currentStep ? 'brand.100' : 'gray.100'}
+              color={index === currentStep ? 'white' : index < currentStep ? 'brand.600' : 'gray.500'}
+              fontSize="xs"
+              fontWeight="medium"
+              cursor={index < currentStep ? 'pointer' : 'default'}
+              onClick={() => index < currentStep && handleStepChange(index)}
+            >
+              {index + 1}
+            </Box>
+          ))}
+        </HStack>
+
+        {/* Form */}
+        <DealInputForm
+          currentStep={currentStep}
+          onStepChange={handleStepChange}
+          onComplete={handleComplete}
+          isAnalyzing={isAnalyzing}
+        />
+      </VStack>
+    </Box>
+  )
+}

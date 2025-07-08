@@ -59,7 +59,8 @@ export default function DealInputForm({
   const isStepValid = () => {
     switch (currentStep) {
       case 0:
-        return !!(formData.propertyType && formData.purchasePrice && formData.numberOfUnits)
+        return !!(formData.propertyType && formData.purchasePrice && formData.numberOfUnits && 
+                 formData.purchasePrice > 0 && formData.numberOfUnits > 0)
       case 1:
         return true // Rent roll can be empty initially
       case 2:

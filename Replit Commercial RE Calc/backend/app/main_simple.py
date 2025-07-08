@@ -87,6 +87,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Add error handling middleware
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    return {
+        "error": "Internal server error",
+        "detail": str(exc) if app.debug else "An unexpected error occurred",
+        "type": type(exc).__name__
+    }
+
 # Simple financial calculations
 def calculate_financial_metrics(deal_input: DealInput) -> FinancialMetrics:
     """Calculate basic financial metrics"""

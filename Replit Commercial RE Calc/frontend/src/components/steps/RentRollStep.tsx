@@ -342,14 +342,26 @@ export default function RentRollStep({
                       <input
                         value={unit.unitNumber}
                         onChange={(e) => updateUnit(index, 'unitNumber', e.target.value)}
-                        style={{ width: '80px' }}
+                        style={{ 
+                          width: '80px',
+                          padding: '4px 8px',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '4px',
+                          fontSize: '14px'
+                        }}
                       />
                     </Td>
                     <Td>
                       <input
                         value={unit.unitType}
                         onChange={(e) => updateUnit(index, 'unitType', e.target.value)}
-                        style={{ width: '100px' }}
+                        style={{ 
+                          width: '100px',
+                          padding: '4px 8px',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '4px',
+                          fontSize: '14px'
+                        }}
                       />
                     </Td>
                     <Td>
