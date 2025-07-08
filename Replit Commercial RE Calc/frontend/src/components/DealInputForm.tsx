@@ -187,35 +187,70 @@ export default function DealInputForm({
     <Box>
       {renderStep()}
 
-      <HStack spacing={4} justify="space-between" mt={8}>
-        <HStack spacing={2}>
+      <Box 
+        mt={8} 
+        p={6} 
+        bg="gray.50" 
+        borderRadius="xl" 
+        border="1px solid" 
+        borderColor="gray.200"
+      >
+        <HStack 
+          spacing={4} 
+          justify="space-between" 
+          flexDirection={{ base: 'column', md: 'row' }}
+          align={{ base: 'stretch', md: 'center' }}
+        >
+          <HStack spacing={2} order={{ base: 2, md: 1 }}>
+            <Button
+              onClick={handleBack}
+              isDisabled={currentStep === 0}
+              variant="outline"
+              size="lg"
+              flex={{ base: 1, md: 'auto' }}
+            >
+              Back
+            </Button>
+            <Button
+              onClick={handleClearProgress}
+              variant="ghost"
+              colorScheme="red"
+              size="sm"
+              display={{ base: 'none', md: 'inline-flex' }}
+            >
+              Clear Progress
+            </Button>
+          </HStack>
+
           <Button
-            onClick={handleBack}
-            isDisabled={currentStep === 0}
-            variant="outline"
+            onClick={handleNext}
+            variant="solid"
+            colorScheme="brand"
+            size="lg"
+            isLoading={isAnalyzing}
+            loadingText="Analyzing Your Deal..."
+            isDisabled={!isStepValid()}
+            order={{ base: 1, md: 2 }}
+            minW={{ base: 'full', md: '200px' }}
+            rightIcon={currentStep === 3 ? undefined : undefined}
           >
-            Back
-          </Button>
-          <Button
-            onClick={handleClearProgress}
-            variant="ghost"
-            colorScheme="red"
-            size="sm"
-          >
-            Clear Progress
+            {currentStep === 3 ? 'Analyze Deal 🚀' : 'Continue →'}
           </Button>
         </HStack>
-
+        
+        {/* Mobile clear progress button */}
         <Button
-          onClick={handleNext}
-          colorScheme="brand"
-          isLoading={isAnalyzing}
-          loadingText="Analyzing..."
-          isDisabled={!isStepValid()}
+          onClick={handleClearProgress}
+          variant="ghost"
+          colorScheme="red"
+          size="sm"
+          mt={3}
+          display={{ base: 'block', md: 'none' }}
+          w="full"
         >
-          {currentStep === 3 ? 'Analyze Deal' : 'Next'}
+          Clear All Progress
         </Button>
-      </HStack>
+      </Box>
     </Box>
   )
 }

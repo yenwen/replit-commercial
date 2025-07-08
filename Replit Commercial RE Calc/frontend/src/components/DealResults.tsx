@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, VStack, HStack, Heading, Text, SimpleGrid, Stat, StatLabel, StatNumber, StatHelpText, Alert, AlertIcon, Button, Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react'
+import { Box, VStack, HStack, Heading, Text, SimpleGrid, Stat, StatLabel, StatNumber, StatHelpText, Alert, AlertIcon, Button, Table, Thead, Tbody, Tr, Th, Td, Card, CardBody } from '@chakra-ui/react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts'
 import { DealAnalysis, DealInput } from '@/types'
 import SensitivityPanel from './SensitivityPanel'
@@ -227,9 +227,10 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
         </Box>
 
         {/* Key Metrics */}
-        <Box>
-          <Heading size="md" mb={4}>Key Financial Metrics</Heading>
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+        <Card>
+          <CardBody>
+            <Heading size="md" mb={6} color="gray.800">Key Financial Metrics</Heading>
+            <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={6}>
             <Stat>
               <StatLabel>Net Operating Income</StatLabel>
               <StatNumber>{formatCurrency(financialMetrics.noi)}</StatNumber>
@@ -311,7 +312,8 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
               </StatHelpText>
             </Stat>
           </SimpleGrid>
-        </Box>
+          </CardBody>
+        </Card>
 
         {/* Overall Grade Section */}
         <Box bg="gray.50" p={6} borderRadius="lg" border="2px solid" borderColor="gray.200">

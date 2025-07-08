@@ -75,23 +75,40 @@ export default function DealAnalyzer() {
 
   return (
     <Box>
-      <Stepper index={activeStep} mb={8}>
-        {steps.map((step, index) => (
-          <Step key={index}>
-            <StepIndicator>
-              <StepStatus
-                complete={<StepIcon />}
-                incomplete={<StepNumber />}
-                active={<StepNumber />}
-              />
-            </StepIndicator>
-            <Box flexShrink='0'>
-              <StepTitle>{step.title}</StepTitle>
-            </Box>
-            <StepSeparator />
-          </Step>
-        ))}
-      </Stepper>
+      {/* Progress Stepper - Hide on mobile when in results */}
+      <Box display={{ base: currentStep >= 4 ? 'none' : 'block', md: 'block' }}>
+        <Stepper 
+          index={activeStep} 
+          mb={8} 
+          orientation={{ base: 'vertical', md: 'horizontal' }}
+          height={{ base: 'auto', md: 'auto' }}
+          gap={{ base: 4, md: 0 }}
+        >
+          {steps.map((step, index) => (
+            <Step key={index}>
+              <StepIndicator 
+                bg={activeStep >= index ? 'brand.500' : 'gray.200'}
+                borderColor={activeStep >= index ? 'brand.500' : 'gray.300'}
+              >
+                <StepStatus
+                  complete={<StepIcon color="white" />}
+                  incomplete={<StepNumber color="gray.500" />}
+                  active={<StepNumber color="white" />}
+                />
+              </StepIndicator>
+              <Box flexShrink='0' ml={{ base: 4, md: 0 }}>
+                <StepTitle 
+                  fontSize={{ base: 'sm', md: 'md' }}
+                  color={activeStep >= index ? 'brand.600' : 'gray.500'}
+                >
+                  {step.title}
+                </StepTitle>
+              </Box>
+              <StepSeparator />
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
 
       <VStack spacing={8} align="stretch">
         {currentStep < 4 ? (
@@ -102,9 +119,45 @@ export default function DealAnalyzer() {
             isAnalyzing={isAnalyzing}
           />
         ) : (
-          <DealResults analysis={analysis} reanalyze={analyzeDeal} />
+          <DealResults analysis={analysis} onReanalyze={analyzeDeal} />
         )}
       </VStack>
+
+      {/* Loading Overlay */}
+      {isAnalyzing && (
+        <Box
+          position="fixed"
+          top="0"
+          left="0"
+          right="0"
+          bottom="0"
+          bg="rgba(255, 255, 255, 0.9)"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          zIndex="overlay"
+        >
+          <VStack spacing={4}>
+            <Box
+              w="16"
+              h="16"
+              border="4px solid"
+              borderColor="gray.200"
+              borderTopColor="brand.500"
+              borderRadius="full"
+              animation="spin 1s linear infinite"
+            />
+            <VStack spacing={2} textAlign="center">
+              <Text fontSize="lg" fontWeight="600" color="gray.800">
+                Analyzing Your Deal
+              </Text>
+              <Text fontSize="sm" color="gray.600" maxW="xs">
+                Our AI is crunching the numbers and generating your investment analysis...
+              </Text>
+            </VStack>
+          </VStack>
+        </Box>
+      )}
     </Box>
   )
 }
