@@ -125,7 +125,8 @@ export default function DealResults({ analysis }: DealResultsProps) {
               </StatLabel>
               <StatNumber>{formatPercentage(financialMetrics.goingInCapRate)}</StatNumber>
               <StatHelpText>
-                NOI ÷ Purchase Price. Measures the unlevered yield on your investment. Higher cap rates indicate better value or higher risk markets.
+                NOI ÷ Purchase Price. For every $100 invested, you earn ${(financialMetrics.goingInCapRate).toFixed(2)} annually before debt service. 
+                A 6% cap rate means the property pays for itself in ~16.7 years. Higher rates = better immediate returns or riskier areas.
               </StatHelpText>
             </Stat>
 
@@ -139,7 +140,8 @@ export default function DealResults({ analysis }: DealResultsProps) {
               </StatLabel>
               <StatNumber>{formatPercentage(financialMetrics.cashOnCashReturn)}</StatNumber>
               <StatHelpText>
-                Annual Cash Flow ÷ Initial Cash Investment. Shows the return on your actual cash invested, accounting for leverage effects.
+                Annual Cash Flow ÷ Cash Invested. For every $100 of your own money invested, you receive ${(financialMetrics.cashOnCashReturn).toFixed(2)} 
+                annually in cash flow. An 8% return means doubling your cash in 12.5 years through cash flow alone.
               </StatHelpText>
             </Stat>
 
@@ -153,7 +155,8 @@ export default function DealResults({ analysis }: DealResultsProps) {
               </StatLabel>
               <StatNumber>{formatPercentage(financialMetrics.irr)}</StatNumber>
               <StatHelpText>
-                The annualized effective return rate including cash flows and exit proceeds. Accounts for time value of money over the hold period.
+                Your total annualized return including cash flows and sale proceeds. A 12% IRR means your investment grows at 12% per year - 
+                like earning 12% annually in the stock market, but through real estate cash flow and appreciation.
               </StatHelpText>
             </Stat>
 
