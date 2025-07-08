@@ -1,0 +1,35 @@
+**Goal: Enhance Application UI and User Experience**
+
+Please refactor the frontend of the application to improve its user interface and overall user experience, focusing on the following areas:
+
+**1. Modernize and Theme the Layout:**
+*   Apply a consistent, modern SaaS-like theme using Chakra UI.
+*   Utilize Chakra UI best practices for spacing (p, m props), color schemes (choose a primary and secondary color palette), and font sizes (use the built-edge scale).
+*   Refactor existing layouts to leverage Chakra UI's Flex and Grid components for better structure and alignment.
+
+**2. Improve Form and Input Styling:**
+*   Update all input forms to use Chakra UI's FormControl, FormLabel, and Input components.
+*   Ensure consistent and clean spacing within forms.
+*   Style buttons using Chakra UI variants, specifically using `variant="solid"` for primary call-to-action buttons like "Analyze Deal".
+
+**3. Enhance Information Clarity with Tooltips and Helper Text:**
+*   Add tooltips or helper text (using Chakra UI's Tooltip or FormHelperText) to explain complex financial inputs and metrics, such as IRR, NOI, and DSCR.
+*   Ensure the user onboarding process is intuitive and user-friendly, possibly by adding introductory text or guidance within the UI.
+
+**4. Implement Robust Responsiveness:**
+*   Ensure the application layout adapts seamlessly to different screen sizes, particularly for mobile devices.
+*   Use Chakra UI's responsive props (e.g., `direction={{ base: 'column', md: 'row' }}`) and the `wrap` prop for Flex layouts where appropriate.
+*   Adjust padding and margins for different screen sizes to maintain readability and visual appeal.
+
+**5. Provide Clear Visual Feedback:**
+*   Integrate a Chakra UI Spinner component to indicate loading states during asynchronous operations like file uploads or AI analysis.
+*   Use Chakra UI's Alert or Toast components to provide clear and concise feedback to the user for success messages, errors, and warnings.
+
+**6. Implement Modals for User Interaction:**
+*   Introduce a Chakra UI Modal component for confirmations, summaries, or displaying additional information.
+
+**Considerations:**
+
+*   Prioritize changes that have the biggest impact on user experience.
+*   Maintain code readability and component reusability.
+*   Ensure that the changes do not negatively impact existing functionality.
