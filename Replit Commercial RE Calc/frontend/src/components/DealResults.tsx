@@ -1,5 +1,5 @@
 'use client'
-
+import { useState, useEffect } from 'react'
 import { Box, VStack, HStack, Heading, Text as ChakraText, SimpleGrid, Stat, StatLabel, StatNumber, StatHelpText, Alert, AlertIcon, Button, Table, Thead, Tbody, Tr, Th, Td, Card, CardBody } from '@chakra-ui/react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts'
 import { DealAnalysis, DealInput } from '@/types'
@@ -131,6 +131,13 @@ interface DealResultsProps {
 }
 
 export default function DealResults({ analysis, onReanalyze }: DealResultsProps) {
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+
   if (!analysis) {
     return (
       <Box textAlign="center" py={8}>
@@ -429,15 +436,18 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
             colorScheme="brand" 
             size="lg"
             onClick={() => {
-              const dataStr = JSON.stringify(analysis, null, 2)
-              const dataBlob = new Blob([dataStr], {type: 'application/json'})
-              const url = URL.createObjectURL(dataBlob)
-              const link = document.createElement('a')
-              link.href = url
-              link.download = `deal-analysis-${new Date().toISOString().split('T')[0]}.json`
-              link.click()
-              URL.revokeObjectURL(url)
+              if (isClient) {
+                const dataStr = JSON.stringify(analysis, null, 2)
+                const dataBlob = new Blob([dataStr], {type: 'application/json'})
+                const url = URL.createObjectURL(dataBlob)
+                const link = document.createElement('a')
+                link.href = url
+                link.download = `deal-analysis-${new Date().toISOString().split('T')[0]}.json`
+                link.click()
+                URL.revokeObjectURL(url)
+              }
             }}
+            disabled={!isClient} // Disable button server-side
           >
             Export Analysis
           </Button>
@@ -445,16 +455,20 @@ export default function DealResults({ analysis, onReanalyze }: DealResultsProps)
             variant="outline" 
             size="lg"
             onClick={() => {
-              navigator.clipboard.writeText(window.location.href)
-              // You could add a toast here
+              if (isClient) {
+                navigator.clipboard.writeText(window.location.href)
+                // You could add a toast here
+              }
             }}
+            disabled={!isClient} // Disable button server-side
           >
             Copy Link
           </Button>
           <Button 
             variant="outline" 
             size="lg"
-            onClick={() => window.print()}
+            onClick={() => { if (isClient) window.print() }}
+            disabled={!isClient} // Disable button server-side
           >
             Print Report
           </Button>
