@@ -366,7 +366,7 @@ export default function RentRollStep({
                     </Td>
                     <Td>
                       <NumberInput
-                        value={unit.bedrooms}
+                        value={unit.bedrooms?.toString() || ''}
                         onChange={(_, value) => updateUnit(index, 'bedrooms', value)}
                         min={0}
                         size="sm"
@@ -376,7 +376,7 @@ export default function RentRollStep({
                     </Td>
                     <Td>
                       <NumberInput
-                        value={unit.bathrooms}
+                        value={unit.bathrooms?.toString() || ''}
                         onChange={(_, value) => updateUnit(index, 'bathrooms', value)}
                         min={0}
                         size="sm"
@@ -386,7 +386,7 @@ export default function RentRollStep({
                     </Td>
                     <Td>
                       <NumberInput
-                        value={unit.squareFootage}
+                        value={unit.squareFootage?.toString() || ''}
                         onChange={(_, value) => updateUnit(index, 'squareFootage', value)}
                         min={0}
                         size="sm"
@@ -396,7 +396,7 @@ export default function RentRollStep({
                     </Td>
                     <Td>
                       <NumberInput
-                        value={unit.monthlyRent}
+                        value={unit.monthlyRent?.toString() || ''}
                         onChange={(_, value) => updateUnit(index, 'monthlyRent', value)}
                         min={0}
                         size="sm"
